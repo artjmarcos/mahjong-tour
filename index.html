@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Descubre América · Mahjong World Tour</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f2ca50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Mahjong Tour">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -28,681 +32,63 @@
         .app-container { width: 100%; max-width: 440px; height: 100dvh; max-height: 900px; position: relative; margin: 0 auto; overflow: hidden; box-shadow: 0 0 60px rgba(0,0,0,0.9); background: #0b1512; }
         @media (min-width: 440px) { .app-container { border-radius: 24px; height: 95dvh; margin-top: 2.5dvh; } }
         .text-glow { text-shadow: 0 0 20px rgba(242, 202, 80, 0.5); }
-        .btn-primary { background: linear-gradient(180deg, #f2ca50 0%, #d4af37 100%); color: #241a00; font-weight: 700; letter-spacing: 0.05em; box-shadow: 0 4px 15px rgba(242, 202, 80, 0.3); }
-        .btn-reward { background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%); color: #052e16; font-weight: 700; box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3); }
-        .btn-video { background: linear-gradient(180deg, #c084fc 0%, #a855f7 100%); color: #1a0033; font-weight: 700; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3); }
-        .power-up-btn { background: rgba(242,202,80,0.1); border: 1px solid rgba(242,202,80,0.3); color: #f2ca50; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.1em; cursor: pointer; transition: all 0.2s; position: relative; }
-        .power-up-btn:active { transform: scale(0.9); background: rgba(242,202,80,0.25); }
+        .btn-primary { background: linear-gradient(180deg, #f2ca50 0%, #d4af37 100%); color: #241a00; font-weight: 700; box-shadow: 0 4px 15px rgba(242, 202, 80, 0.3); }
+        .btn-reward { background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%); color: #052e16; font-weight: 700; }
+        .btn-video { background: linear-gradient(180deg, #c084fc 0%, #a855f7 100%); color: #1a0033; font-weight: 700; }
+        .power-up-btn { background: rgba(242,202,80,0.1); border: 1px solid rgba(242,202,80,0.3); color: #f2ca50; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.1em; cursor: pointer; position: relative; }
         .power-up-badge { position: absolute; top: -4px; right: -4px; background: #e74c3c; color: white; font-size: 0.5em; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .vita-tile { position: absolute; border-radius: 10px; cursor: pointer; transition: transform 0.15s, filter 0.15s, box-shadow 0.15s; background-size: cover; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; box-sizing: border-box; overflow: hidden; }
+        .vita-tile { position: absolute; border-radius: 10px; cursor: pointer; background-size: cover; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; overflow: hidden; }
         .vita-tile::before { content: ''; position: absolute; inset: 0; border-radius: 10px; padding: 2px; background: linear-gradient(135deg, #f2ca50, #8B6914, #f2ca50, #d4af37); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; z-index: 5; pointer-events: none; opacity: 0.8; }
-        .vita-tile::after { content: ''; position: absolute; top: 0; left: 4px; right: 4px; height: 30%; background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%); border-radius: 6px 6px 0 0; pointer-events: none; z-index: 2; }
-        .vita-tile .foil-layer { position: absolute; inset: 4px; border-radius: 6px; background: linear-gradient(135deg, transparent 0%, rgba(242,202,80,0.15) 25%, rgba(255,255,255,0.1) 50%, rgba(242,202,80,0.15) 75%, transparent 100%); background-size: 200% 200%; animation: foilShine 3s ease-in-out infinite; z-index: 1; pointer-events: none; }
-        @keyframes foilShine { 0%,100%{background-position:0 50%} 50%{background-position:100% 50%} }
-        .vita-tile .card-name { position: absolute; bottom: 4px; left: 4px; right: 4px; background: rgba(0,0,0,0.85); color: #f2ca50; font-size: 0.4em; text-align: center; padding: 2px 4px; border-radius: 0 0 6px 6px; z-index: 6; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .vita-tile.blocked { filter: brightness(0.35) saturate(0.2); cursor: not-allowed; }
-        .vita-tile.blocked::before { opacity: 0.3; } .vita-tile.blocked::after { display: none; } .vita-tile.blocked .foil-layer { display: none; } .vita-tile.blocked .card-name { opacity: 0.5; }
+        .vita-tile .card-name { position: absolute; bottom: 4px; left: 4px; right: 4px; background: rgba(0,0,0,0.85); color: #f2ca50; font-size: 0.4em; text-align: center; padding: 2px 4px; border-radius: 0 0 6px 6px; z-index: 6; font-weight: 700; }
+        .vita-tile.blocked { filter: brightness(0.35); cursor: not-allowed; }
         .vita-tile.free { filter: brightness(1.05); box-shadow: 0 8px 25px rgba(0,0,0,0.7), 0 0 20px rgba(242,202,80,0.3); animation: cardFloat 4s ease-in-out infinite; z-index: 10; }
         @keyframes cardFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
-        .vita-tile.selected-card { animation: selectedGlow 0.6s ease-in-out infinite !important; filter: brightness(1.4) saturate(1.3) !important; box-shadow: 0 0 40px rgba(242,202,80,0.9), 0 0 80px rgba(242,202,80,0.5) !important; border: 2px solid #f2ca50 !important; z-index: 50 !important; transform: scale(1.06) translateZ(3px) !important; }
-        @keyframes selectedGlow { 0%,100%{box-shadow:0 0 40px rgba(242,202,80,0.9),0 0 80px rgba(242,202,80,0.5)} 50%{box-shadow:0 0 60px rgba(242,202,80,1),0 0 100px rgba(242,202,80,0.7)} }
-        .slot-item { transition: all 0.3s cubic-bezier(0.175,0.885,0.32,1.275); animation: slotPop 0.4s ease; box-shadow: 0 8px 20px rgba(0,0,0,0.6); border-radius: 8px; overflow: hidden; }
+        .vita-tile.selected-card { animation: selectedGlow 0.6s ease-in-out infinite !important; filter: brightness(1.4) !important; box-shadow: 0 0 40px rgba(242,202,80,0.9) !important; border: 2px solid #f2ca50 !important; z-index: 50 !important; transform: scale(1.06) !important; }
+        @keyframes selectedGlow { 0%,100%{box-shadow:0 0 40px rgba(242,202,80,0.9)} 50%{box-shadow:0 0 60px rgba(242,202,80,1)} }
+        .slot-item { animation: slotPop 0.4s ease; box-shadow: 0 8px 20px rgba(0,0,0,0.6); border-radius: 8px; overflow: hidden; }
         .slot-empty { background: rgba(255,255,255,0.08); border: 2px dashed rgba(255,255,255,0.4); color: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-size: 1.5em; font-weight: bold; border-radius: 8px; }
-        @keyframes slotPop { 0%{transform:scale(0.4) translateY(-30px);opacity:0} 70%{transform:scale(1.08) translateY(0)} 100%{transform:scale(1);opacity:1} }
-        .slot-collide { animation: collideBoom 0.5s ease-out forwards; }
-        @keyframes collideBoom { 0%{transform:scale(1);opacity:1} 30%{transform:scale(1.2);opacity:1;filter:brightness(1.5)} 100%{transform:scale(0);opacity:0;filter:brightness(2)} }
-        .particle { position: absolute; pointer-events: none; z-index: 100; animation: particleBurst 0.8s ease-out forwards; font-size: 16px; font-weight: bold; color: #f2ca50; text-shadow: 0 0 10px #f2ca50; }
+        @keyframes slotPop { 0%{transform:scale(0.4) translateY(-30px);opacity:0} 100%{transform:scale(1);opacity:1} }
+        .particle { position: absolute; pointer-events: none; z-index: 100; animation: particleBurst 0.8s ease-out forwards; font-size: 16px; font-weight: bold; color: #f2ca50; }
         @keyframes particleBurst { 0%{transform:translate(0,0) scale(1);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0} }
-        .zoom-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { 0%{opacity:0} 100%{opacity:1} }
-        .zoom-image { width: 80%; max-width: 350px; aspect-ratio: 4/3; border-radius: 16px; object-fit: cover; border: 2px solid #f2ca50; box-shadow: 0 0 40px rgba(242,202,80,0.4); animation: zoomIn 0.4s ease; }
-        @keyframes zoomIn { 0%{transform:scale(0.3);opacity:0} 100%{transform:scale(1);opacity:1} }
-        .zoom-note { color: white; text-align: center; padding: 1rem; font-size: 0.9rem; max-width: 350px; animation: slideUp 0.5s ease; }
-        @keyframes slideUp { 0%{transform:translateY(20px);opacity:0} 100%{transform:translateY(0);opacity:1} }
-        .ad-banner-bottom { position: absolute; bottom: 0; left: 0; right: 0; min-height: 50px; background: rgba(0,0,0,0.9); border-top: 1px solid rgba(242,202,80,0.3); display: flex; align-items: center; justify-content: center; z-index: 60; color: rgba(255,255,255,0.4); font-size: 0.6em; }
-        .reward-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 350; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-        .reward-video-placeholder { width: 300px; height: 250px; background: rgba(255,255,255,0.05); border-radius: 16px; border: 2px dashed rgba(74,222,128,0.5); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); font-size: 0.8em; margin-bottom: 16px; }
-        .tutorial-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-        .tutorial-message { background: rgba(23,34,30,0.95); border: 2px solid #f2ca50; border-radius: 16px; padding: 20px; max-width: 280px; text-align: center; color: white; pointer-events: auto; animation: fadeIn 0.3s ease; }
-        .tutorial-highlight { position: absolute; border: 3px solid #f2ca50; border-radius: 12px; z-index: 301; pointer-events: none; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(242,202,80,0.6); } 70% { box-shadow: 0 0 0 15px rgba(242,202,80,0); } 100% { box-shadow: 0 0 0 0 rgba(242,202,80,0); } }
+        .zoom-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .zoom-image { width: 80%; max-width: 350px; border-radius: 16px; object-fit: cover; border: 2px solid #f2ca50; }
+        .zoom-note { color: white; text-align: center; padding: 1rem; font-size: 0.9rem; max-width: 350px; }
         #ad-banner { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 70; background: rgba(0,0,0,0.8); width: 100%; max-width: 440px; display: flex; justify-content: center; align-items: center; min-height: 50px; }
-        .memorice-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .memorice-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 400; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .memorice-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 340px; width: 100%; }
-        .memorice-card { aspect-ratio: 4/3; border-radius: 12px; background: #1a3a2a; border: 2px solid rgba(242,202,80,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; background-size: cover; background-position: center; }
-        .memorice-card.flipped { transform: scale(1.02); border-color: #f2ca50; }
+        .memorice-card { aspect-ratio: 4/3; border-radius: 12px; background: #1a3a2a; border: 2px solid rgba(242,202,80,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; }
+        .memorice-card.flipped { border-color: #f2ca50; }
         .memorice-card.matched { border-color: #4ade80; opacity: 0.7; pointer-events: none; }
         .memorice-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; display: none; }
         .memorice-card.flipped img { display: block; }
         .memorice-card .card-back { font-size: 2em; color: rgba(242,202,80,0.5); }
         .memorice-card.flipped .card-back { display: none; }
+        .tutorial-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+        .tutorial-message { background: rgba(23,34,30,0.95); border: 2px solid #f2ca50; border-radius: 16px; padding: 20px; max-width: 280px; text-align: center; color: white; pointer-events: auto; }
     </style>
 </head>
 <body>
-<div class="app-container" id="appRoot"></div>
-<div id="ad-banner" style="display:none;"></div>
-<div id="victoryModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200;justify-content:center;align-items:center;backdrop-filter:blur(8px)">
-    <div class="w-4/5 max-w-sm p-6 rounded-3xl border border-primary/30 text-center" style="background:linear-gradient(145deg,rgba(23,34,30,0.9),rgba(11,21,18,0.95))">
-        <div class="text-6xl mb-2" id="victoryIcon">🏆</div>
-        <h2 class="text-2xl font-bold text-primary text-glow">¡Nivel Completado!</h2>
-        <p class="text-white/80 mt-1" id="victoryName"></p>
-        <div class="text-3xl my-4" id="starsDisplay"></div>
-        <button onclick="UI.closeVictory()" class="w-full py-3 mt-2 rounded-xl btn-primary text-lg">VOLVER</button>
+    <div class="app-container" id="appRoot"></div>
+    <div id="ad-banner" style="display:none;"></div>
+    <div id="victoryModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200;justify-content:center;align-items:center;">
+        <div style="background:linear-gradient(145deg,rgba(23,34,30,0.9),rgba(11,21,18,0.95));padding:24px;border-radius:24px;text-align:center;border:1px solid rgba(242,202,80,0.3);max-width:320px;">
+            <div style="font-size:4em;" id="victoryIcon">🏆</div>
+            <h2 class="text-glow" style="color:#f2ca50;font-size:1.5em;font-weight:bold;">¡Nivel Completado!</h2>
+            <p style="color:white;" id="victoryName"></p>
+            <div style="font-size:2em;margin:16px 0;" id="starsDisplay"></div>
+            <button onclick="UI.closeVictory()" class="btn-primary" style="width:100%;padding:12px;border-radius:12px;font-size:1.1em;">VOLVER</button>
+        </div>
     </div>
-</div>
-<div id="rewardModal" style="display:none" class="reward-modal">
-    <span class="text-xs text-white/30 uppercase tracking-widest mb-4">📺 Video Recompensado</span>
-    <div class="reward-video-placeholder"><div class="text-center"><span class="text-4xl block mb-2">🎬</span><span>AdMob · Rewarded Video</span></div></div>
-    <p class="text-white/70 text-sm mb-3" id="rewardText">Mira el video para ganar tu recompensa</p>
-    <div class="flex gap-3"><button onclick="UI.closeRewardModal()" class="px-6 py-2 rounded-xl bg-white/10 text-white/50 text-sm">Cancelar</button><button onclick="UI.simulateRewardedVideo()" class="px-6 py-2 rounded-xl btn-reward text-sm font-bold">🎁 Ver Video</button></div>
-</div>
-
-<script>
-// ========== SDK DE PUBLICIDAD GPT (IDs de prueba) ==========
-window.googletag = window.googletag || { cmd: [] };
-const ADMOB_CONFIG = { banner: '/6499/example/banner', rewarded: '/6499/example/rewarded', interstitial: '/6499/example/interstitial' };
-let bannerSlot, rewardedSlot, interstitialSlot;
-googletag.cmd.push(() => {
-    googletag.pubads().enableSingleRequest();
-    googletag.enableServices();
-    bannerSlot = googletag.defineSlot(ADMOB_CONFIG.banner, [[320, 50], [300, 50]], 'ad-banner').addService(googletag.pubads());
-    rewardedSlot = googletag.defineOutOfPageSlot(ADMOB_CONFIG.rewarded).addService(googletag.pubads());
-    interstitialSlot = googletag.defineOutOfPageSlot(ADMOB_CONFIG.interstitial).addService(googletag.pubads());
-});
-
-// ========== NÚCLEO PROTEGIDO (GameEngine) – PAREJAS GARANTIZADAS ==========
-const GameEngine = (function() {
-    let tiles = [], slots = [], score = 0, combo = 1;
-    let selectedTileIdx = null;
-    const MAX_SLOTS = 4;
-    let currentLevelConfig = null;
-    let difficulty = 'normal';
-    let timerInterval = null, timeLeft = -1;
-    let hintUses = 3, shuffleUses = 3, undoUses = 3;
-    let onStateChange = null;
-
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    let audioCtx;
-    function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
-    function playTone(freq, duration, type='sine', vol=0.1) {
-        if (!audioCtx) return;
-        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-        osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(vol, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + duration);
-    }
-    const sound = {
-        select: () => playTone(600, 0.1, 'sine', 0.15),
-        match: () => { playTone(523,0.15); setTimeout(()=>playTone(659,0.15),100); setTimeout(()=>playTone(784,0.2),200); },
-        error: () => playTone(200, 0.2, 'square', 0.08),
-        victory: () => [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.3,'sine',0.25),i*150)),
-        shuffle: () => playTone(440, 0.2, 'triangle', 0.15),
-        hint: () => playTone(660, 0.15, 'sine', 0.2),
-    };
-
-    function isTileFree(tile, activeTiles) {
-        const { col, row, layer } = tile;
-        const above = activeTiles.find(t => t.layer === layer + 1 && Math.abs(t.col - col) <= 1 && Math.abs(t.row - row) <= 1);
-        if (above) return false;
-        const left = activeTiles.find(t => t.layer === layer && t.row === row && t.col === col - 1);
-        const right = activeTiles.find(t => t.layer === layer && t.row === row && t.col === col + 1);
-        return !(left && right);
-    }
-    function updateBlocked() {
-        const active = tiles.filter(t => !t.matched && !t.inSlot);
-        tiles.forEach(t => { if (t.matched || t.inSlot) { t.blocked = false; return; } t.blocked = !isTileFree(t, active); });
-    }
-    function shouldBeFaceDown(levelNum) {
-        if (difficulty === 'facil') return false;
-        if (difficulty === 'dificil') return levelNum >= 4 ? Math.random() < 0.6 : false;
-        return levelNum >= 6 ? Math.random() < 0.5 : false;
-    }
-
-    function createTiles(zonePhotos, traditionalTilesList) {
-        let attempts = 0;
-        const maxAttempts = 10;
-        while (attempts < maxAttempts) {
-            tiles = [];
-            let totalPairs = Math.max(1, Math.floor(currentLevelConfig.pairs));
-            const pairItems = [];
-            let maxPhotos = (currentLevelConfig.num <= 3) ? Math.min(4, zonePhotos.length) : zonePhotos.length;
-            const usedPhotos = [...zonePhotos].sort(() => Math.random() - 0.5).slice(0, maxPhotos);
-            for (let i = 0; i < Math.min(totalPairs, usedPhotos.length); i++) {
-                pairItems.push({ ...usedPhotos[i], type: 'photo' });
-            }
-            let tradIdx = 0;
-            while (pairItems.length < totalPairs) {
-                pairItems.push({ ...traditionalTilesList[tradIdx % traditionalTilesList.length], type: 'ceramic' });
-                tradIdx++;
-            }
-            pairItems.forEach((item, pid) => {
-                const fd = shouldBeFaceDown(currentLevelConfig.num), bonus = difficulty === 'dificil' && Math.random() < 0.2;
-                tiles.push({ ...item, pid, matched: false, blocked: false, inSlot: false, col: 0, row: 0, layer: 0, faceDown: fd, revealed: !fd, bonus });
-                tiles.push({ ...item, pid, matched: false, blocked: false, inSlot: false, col: 0, row: 0, layer: 0, faceDown: fd, revealed: !fd, bonus });
-            });
-            const count = {}; tiles.forEach(t => { count[t.pid] = (count[t.pid] || 0) + 1; });
-            const allPairsOk = Object.values(count).every(c => c === 2);
-            if (allPairsOk && tiles.length % 2 === 0) break;
-            attempts++;
-            console.warn(`⚠️ Intento ${attempts}: pares incorrectos, regenerando nivel...`);
-        }
-        if (attempts >= maxAttempts) console.error('❌ No se pudo generar un nivel válido.');
-        for (let i = tiles.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [tiles[i], tiles[j]] = [tiles[j], tiles[i]]; }
-        const totalTiles = tiles.length, colsBase = 6, rowsBase = Math.ceil(totalTiles * 0.7 / colsBase);
-        const tilesLayer0 = Math.min(totalTiles, colsBase * rowsBase), tilesLayer1 = totalTiles - tilesLayer0, colsLayer1 = 4, offsetCol = Math.floor((colsBase - colsLayer1) / 2);
-        let idx = 0;
-        for (let i = 0; i < tilesLayer0; i++) { tiles[idx].col = i % colsBase; tiles[idx].row = Math.floor(i / colsBase); tiles[idx].layer = 0; idx++; }
-        for (let i = 0; i < tilesLayer1; i++) { tiles[idx].col = offsetCol + (i % colsLayer1); tiles[idx].row = Math.floor(i / colsLayer1); tiles[idx].layer = 1; idx++; }
-        updateBlocked();
-    }
-
-    function checkForMatchInSlots() {
-        if (slots.length < 2) return;
-        for (let i = 0; i < slots.length; i++) {
-            for (let j = i + 1; j < slots.length; j++) {
-                if (slots[i].pid === slots[j].pid && slots[i].idx !== slots[j].idx) {
-                    const a = slots[i], b = slots[j]; sound.match();
-                    const idxA = a.idx, idxB = b.idx;
-                    if (idxA > idxB) { tiles.splice(idxA, 1); tiles.splice(idxB, 1); } else { tiles.splice(idxB, 1); tiles.splice(idxA, 1); }
-                    const removed = [idxA, idxB].sort((x, y) => x - y);
-                    slots.forEach(slot => { if (slot.idx > removed[0]) slot.idx--; if (slot.idx > removed[1]) slot.idx--; });
-                    if (i > j) { slots.splice(i, 1); slots.splice(j, 1); } else { slots.splice(j, 1); slots.splice(i, 1); }
-                    selectedTileIdx = slots.length > 0 ? slots[slots.length - 1].idx : null;
-                    const multiplier = (a.bonus && b.bonus) ? 2 : 1; score += (100 + combo * 50) * multiplier; combo++;
-                    if (timeLeft > 0) { timeLeft += 3; if (timeLeft > 99) timeLeft = 99; }
-                    updateBlocked();
-                    if (onStateChange) onStateChange('match', { a, b });
-                    if (tiles.filter(t => !t.matched && !t.inSlot).length === 0) { if (timerInterval) clearInterval(timerInterval); if (onStateChange) onStateChange('victory', { score, combo }); }
-                    return;
-                }
-            }
-        }
-        if (slots.length >= MAX_SLOTS) { sound.error(); if (onStateChange) onStateChange('slotsfull'); }
-    }
-
-    function startTimer() { if (timerInterval) clearInterval(timerInterval); timerInterval = setInterval(() => { timeLeft--; if (onStateChange) onStateChange('timer', { timeLeft }); if (timeLeft <= 0) { clearInterval(timerInterval); if (onStateChange) onStateChange('timeout'); } }, 1000); }
-
-    return Object.freeze({
-        init(config, zonePhotos, traditionalTilesList) {
-            initAudio(); currentLevelConfig = config; difficulty = config.difficulty || 'normal';
-            slots = []; score = 0; combo = 1; selectedTileIdx = null;
-            if (timerInterval) clearInterval(timerInterval);
-            timeLeft = (difficulty === 'dificil') ? config.pairs * 6 : -1;
-            hintUses = config.hintUses || 3; shuffleUses = config.shuffleUses || 3; undoUses = config.undoUses || 3;
-            createTiles(zonePhotos, traditionalTilesList);
-            if (timeLeft > 0) startTimer();
-        },
-        getTiles() { return tiles; }, getSlots() { return slots; }, getScore() { return score; }, getCombo() { return combo; },
-        getSelectedTileIdx() { return selectedTileIdx; }, getTimeLeft() { return timeLeft; }, getDifficulty() { return difficulty; },
-        getPowerUps() { return { hintUses, shuffleUses, undoUses }; },
-        addPowerUp(type, amount = 1) { if (type === 'hint') hintUses += amount; else if (type === 'shuffle') shuffleUses += amount; else if (type === 'undo') undoUses += amount; },
-        onTileClick(index) {
-            const t = tiles[index]; if (!t || t.matched || t.blocked || t.inSlot) return false;
-            if (slots.length >= MAX_SLOTS) return false; if (t.faceDown && !t.revealed) t.revealed = true;
-            sound.select(); t.inSlot = true; slots.push({ ...t, idx: index }); selectedTileIdx = index;
-            updateBlocked(); checkForMatchInSlots(); if (onStateChange) onStateChange('boardChanged'); return true;
-        },
-        useShuffle() { if (shuffleUses <= 0) return false; shuffleUses--; sound.shuffle(); tiles.forEach(t => { t.col = Math.floor(Math.random() * 6); t.row = Math.floor(Math.random() * Math.ceil(tiles.length / 6)); }); slots = []; selectedTileIdx = null; updateBlocked(); if (onStateChange) onStateChange('boardChanged'); return true; },
-        useHint() { if (hintUses <= 0) return false; hintUses--; sound.hint(); const f = tiles.filter(t => !t.matched && !t.inSlot); for (let i = 0; i < f.length; i++) { for (let j = i + 1; j < f.length; j++) { if (f[i].pid === f[j].pid) { if (onStateChange) onStateChange('hint', { name: f[i].name || 'Fichas iguales' }); return true; } } } if (onStateChange) onStateChange('hint', { name: 'Mezcla el tablero' }); return true; },
-        undoLastSelection() { if (slots.length === 0) return false; sound.select(); const last = slots.pop(); tiles[last.idx].inSlot = false; selectedTileIdx = slots.length > 0 ? slots[slots.length - 1].idx : null; updateBlocked(); if (onStateChange) onStateChange('boardChanged'); return true; },
-        setOnStateChange(callback) { onStateChange = callback; }, isGameOver() { return tiles.filter(t => !t.matched && !t.inSlot).length === 0; },
-        stopTimer() { if (timerInterval) clearInterval(timerInterval); }, getLevelConfig() { return currentLevelConfig; }
-    });
-})();
-
-// ========== DATOS (fotos, zonas, logros) – COMPLETOS ==========
-const nortePhotos = [
-    { name:'Piedras Rojas', url:'https://drive.google.com/thumbnail?id=1F0IYAE6mROqz0nBtOrRL0-r-7xMQFwhb&sz=w400', zone:'norte', nota:'Formaciones rocosas en el altiplano, a más de 4.000m.' },
-    { name:'Laguna Miscanti', url:'https://drive.google.com/thumbnail?id=1UQtlAR9wOdNBsC-E2XnYpLEbCXPDGtsA&sz=w400', zone:'norte', nota:'Laguna altiplánica en Antofagasta.' },
-    { name:'Valle de la Luna', url:'https://drive.google.com/thumbnail?id=14Od2N2_ZkM4avnh1UiOHI6U3gqeMxLny&sz=w400', zone:'norte', nota:'Paisaje lunar en el Desierto de Atacama.' },
-    { name:'Iglesia', url:'https://drive.google.com/thumbnail?id=1CU-oHqUlBsoeit8D7THQCnvdzeE3Ri0o&sz=w400', zone:'norte', nota:'San Pedro de Atacama.' },
-    { name:'Flamenco', url:'https://drive.google.com/thumbnail?id=14Qdu0r0OuSeZgFb9-Nz1VSq0ytx_SqG1&sz=w400', zone:'norte', nota:'Fauna en el Salar de Atacama.' },
-    { name:'La Portada', url:'https://drive.google.com/thumbnail?id=1cLUas6xEls2ZgtyI14qiX04KLDjroqcG&sz=w400', zone:'norte', nota:'Región de Antofagasta.' },
-    { name:'Lagunas Escondidas de Baltinache', url:'https://drive.google.com/thumbnail?id=1dKEA6oYUsiEXfE5Yf2-Yp8Eu0f6baMvK&sz=w400', zone:'norte', nota:'Salar de Atacama.' },
-    { name:'Desierto Florido', url:'https://drive.google.com/thumbnail?id=1zw6EbP5jjmpuM6izdhL9GTbrUPv2_pEg&sz=w400', zone:'norte', nota:'La magia del desierto chileno.' },
-    { name:'Géiser del Tatio', url:'https://drive.google.com/thumbnail?id=1myfk3mUjy78mLbMvSe1pjdXw8uvRism-&sz=w400', zone:'norte', nota:'Aguas termales a más de 4.300m.' },
-    { name:'Valle del Arcoíris', url:'https://drive.google.com/thumbnail?id=1glWxef_1S66sAAIwemQx1_KXEnPKwtam&sz=w400', zone:'norte', nota:'Cerros multicolores en el Desierto de Atacama.' },
-    { name:'Lagunas Altiplánicas', url:'https://drive.google.com/thumbnail?id=19R2ZGOtvO9iOcLhOtVcTpDATOb4igup6&sz=w400', zone:'norte', nota:'Lagunas de altura en la Región de Antofagasta.' },
-    { name:'Salar de Atacama', url:'https://drive.google.com/thumbnail?id=1grEzPHz96h3nI3Am8DRBbdN3PFs71-or&sz=w400', zone:'norte', nota:'El mayor salar de Chile.' },
-];
-const centroPhotos = [
-    { name:'Costanera Center', url:'https://drive.google.com/thumbnail?id=1nGUkO0nawN3gOwjW21hXCIDNYPFegMt0&sz=w400', zone:'centro', nota:'Vista panorámica del centro.' },
-    { name:'Castillo Wulff', url:'https://drive.google.com/thumbnail?id=1yv2VBxXp9gu27IFAm5tN-IiumJ7sspBe&sz=w400', zone:'centro', nota:'Viña del Mar.' },
-    { name:'Cerro San Cristobal', url:'https://drive.google.com/thumbnail?id=1HCxBgrT5lDyhSLe2otrp4w2ugBBDXSbX&sz=w400', zone:'centro', nota:'Santiago.' },
-    { name:'Cerro Santa Lucía', url:'https://drive.google.com/thumbnail?id=1R-r4Tt1TIc9A7VJ1_-_iXy2P2NpZfOsN&sz=w400', zone:'centro', nota:'Santiago.' },
-    { name:'Cordillera de Los Andes', url:'https://drive.google.com/thumbnail?id=1Vy-KF3PCdLQTPg-9grzLVjyWTebzlCHb&sz=w400', zone:'centro', nota:'Hermosa vista desde la capital.' },
-    { name:'Atardecer desde Santiago', url:'https://drive.google.com/thumbnail?id=1PyuMXVS-J7z4Ch1u3mFt27E6wmkpEK5L&sz=w400', zone:'centro', nota:'Con la cordillera de fondo.' },
-    { name:'Embalse El Yeso', url:'https://drive.google.com/thumbnail?id=1Ay1YRncILC0rm0QZM_cEn2Vodu23cOCd&sz=w400', zone:'centro', nota:'Cajón del Maipo.' },
-    { name:'Centro de Santiago', url:'https://drive.google.com/thumbnail?id=1VqAz0OrJZ3kufu5_yj7M6zs1NgUy6Byw&sz=w400', zone:'centro', nota:'Zona urbana de comercio.' },
-    { name:'Barrio Lastarria', url:'https://drive.google.com/thumbnail?id=16yL_2czoYeGo8Ps0yq2eAunMaMnx2e0F&sz=w400', zone:'centro', nota:'Lugar de encuentro de artistas y comerciantes.' },
-    { name:'Viñedos', url:'https://drive.google.com/thumbnail?id=1xFEIBTub8gBh1W5KRq2_ZBiUNmrFFJnH&sz=w400', zone:'centro', nota:'Valle Central.' },
-    { name:'Parque Nacional La Campana', url:'https://drive.google.com/thumbnail?id=1j6zc5a3Fs66WF4RNzL8CS0DxNrgeH9ll&sz=w400', zone:'centro', nota:'Reserva de la biosfera en la Región de Valparaíso.' },
-    { name:'Caleta Horcón', url:'https://drive.google.com/thumbnail?id=1891kWifKa-U9pkBRtkPRtmpR09IRPpsm&sz=w400', zone:'centro', nota:'Pueblo costero con tradición pesquera.' },
-];
-const surPhotos = [
-    { name:'Palafitos', url:'https://drive.google.com/thumbnail?id=1AmW36m9FQyk4YCmIIl4jT_pML24l5p8d&sz=w400', zone:'sur', nota:'Castro Chiloé.' },
-    { name:'Rio Calle Calle', url:'https://drive.google.com/thumbnail?id=120O2TkWrtd-pJnsCqv6ktR3Z-kXZ_37i&sz=w400', zone:'sur', nota:'Valdivia.' },
-    { name:'Volcán Villarrica', url:'https://drive.google.com/thumbnail?id=1X-7YtR48yGYGfRasz4mLOgnx8RsXPCPC&sz=w400', zone:'sur', nota:'Hermosa vista desde La Poza de Pucón.' },
-    { name:'Río Tolten', url:'https://drive.google.com/thumbnail?id=1yR4_putOUKXtkjcFUp4j680VCMiZpB6b&sz=w400', zone:'sur', nota:'Región de la Araucanía.' },
-    { name:'Selva valdiviana', url:'https://drive.google.com/thumbnail?id=1CfegotOgyuSQ_3LpVQRYUeFOgcepX8jB&sz=w400', zone:'sur', nota:'Región de los Ríos.' },
-    { name:'Volcán Osorno', url:'https://drive.google.com/thumbnail?id=1qHxn6xYIMKduZ55urTczocbY8pQo6fL0&sz=w400', zone:'sur', nota:'Saltos de Petrohue.' },
-    { name:'Puerto Varas', url:'https://drive.google.com/thumbnail?id=1c8lbpmfV_tPnO7RFu_BJ4wWJMgIgAeue&sz=w400', zone:'sur', nota:'Lago Llanquihue.' },
-    { name:'Mercado fluvial', url:'https://drive.google.com/thumbnail?id=1t0G1sHMmV0EfZFa3J2wlpW6qzb2Zexai&sz=w400', zone:'sur', nota:'Valdivia.' },
-    { name:'Martin pescador', url:'https://drive.google.com/thumbnail?id=1MDDIDV3T6IOPgE5tXsF0TgP_ZBun-xhK&sz=w400', zone:'sur', nota:'Fauna del sur.' },
-    { name:'Volcán Lonquimay y araucarias', url:'https://drive.google.com/thumbnail?id=1Y1KoBuViE5kXhMI8jXs0NptFhYQcRlgS&sz=w400', zone:'sur', nota:'Reserva Nacional Malalcahuello.' },
-    { name:'Puente Rodrigo de Bastidas', url:'https://drive.google.com/thumbnail?id=1uovAMwK7ud7r3byH3y31ESh2-_z6Uuup&sz=w400', zone:'sur', nota:'Rio Tolten Villarrica.' },
-    { name:'Viaducto del Malleco', url:'https://drive.google.com/thumbnail?id=15HOHLT2otsmj5AJ5pDmv5k8h3VtlzjSC&sz=w400', zone:'sur', nota:'Región de la Araucanía.' },
-];
-const patagoniaPhotos = [
-    { name:'Torres del Paine', url:'https://drive.google.com/thumbnail?id=15ax4Kz362p7z5yTjbgd8z9b98ha3HfTh&sz=w400', zone:'austral', nota:'Puerto Natales.' },
-    { name:'Punta Arenas', url:'https://drive.google.com/thumbnail?id=18bTBxQKTjcVHaBdkZpPh967esE5MD1PL&sz=w400', zone:'austral', nota:'Región de Magallanes.' },
-    { name:'Lago Grey', url:'https://drive.google.com/thumbnail?id=1-o2SJrZDqQE64vESRbYExBcEH1lzHaPW&sz=w400', zone:'austral', nota:'Torres del Paine.' },
-    { name:'Glaciar Grey', url:'https://drive.google.com/thumbnail?id=1_VLPDVx6WBuBiA4hEegwtLWGZJ285DMB&sz=w400', zone:'austral', nota:'Hielo azul eterno.' },
-    { name:'Valle del Francés', url:'https://drive.google.com/thumbnail?id=1tVxHCA0R_4f4apJse_hvco32R0nVHc3R&sz=w400', zone:'austral', nota:'Paisajes increíbles.' },
-    { name:'Estancia Patagónica', url:'https://drive.google.com/thumbnail?id=1cY0MZt2mekm40M0lynkh6CypXNX4PZ-G&sz=w400', zone:'austral', nota:'La soledad más bella del planeta.' },
-    { name:'Lago Pehoé', url:'https://drive.google.com/thumbnail?id=1NpBgGLaGErifAqGG0m5cjJR2zfmB07x7&sz=w400', zone:'austral', nota:'Estepa y montaña en perfecta unión.' },
-    { name:'Canal Beagle', url:'https://drive.google.com/thumbnail?id=1Y--szySJeRA54gtRZgMWX2rXLoURu654&sz=w400', zone:'austral', nota:'Ríos de hielo entre cumbres nevadas.' },
-    { name:'Cabo de Hornos', url:'https://drive.google.com/thumbnail?id=1exOBlMQYYveF6J02irHIofpI2nUo9U7A&sz=w400', zone:'austral', nota:'La Patagonia profunda te espera.' },
-    { name:'Isla Magdalena', url:'https://drive.google.com/thumbnail?id=1awWCm8OHQ2vUPdR1-1XVSyqBXKXDIopk&sz=w400', zone:'austral', nota:'Colores imposibles en el extremo sur.' },
-    { name:'Puerto Williams', url:'https://drive.google.com/thumbnail?id=1YUC001Cd2vKwxNyV1ri1nlcDcQY3yxip&sz=w400', zone:'austral', nota:'Tierra de gigantes y leyendas.' },
-    { name:'Ventisquero Colgante', url:'https://drive.google.com/thumbnail?id=1PQ9x8ocUO_H2l7QmCHguro8M0HJS4aPW&sz=w400', zone:'austral', nota:'Glaciar colgante en la Patagonia chilena.' },
-];
-const argentinaNortePhotos = [
-    { name:'Quebrada de Humahuaca', url:'https://drive.google.com/thumbnail?id=1uwaDZGOxkdgwZh-Xb3kDYdjB7BVHEVyh&sz=w400', zone:'argentina-norte', nota:'Patrimonio de la Humanidad en Jujuy.' },
-    { name:'Cerro de los Siete Colores', url:'https://drive.google.com/thumbnail?id=1xGdn2yjxwquDyAQKBsmg9INXr4NomCzk&sz=w400', zone:'argentina-norte', nota:'Ícono de Purmamarca, Jujuy.' },
-    { name:'Salinas Grandes', url:'https://drive.google.com/thumbnail?id=1xGdn2yjxwquDyAQKBsmg9INXr4NomCzk&sz=w400', zone:'argentina-norte', nota:'Desierto de sal entre Jujuy y Salta.' },
-    { name:'Cuesta de Lipán', url:'https://drive.google.com/thumbnail?id=16NaOVDOdGL_5bO5e9Rzco76T28hcId_W&sz=w400', zone:'argentina-norte', nota:'Carretera de montaña con vistas increíbles.' },
-    { name:'Pucará de Tilcara', url:'https://drive.google.com/thumbnail?id=1iOlTgQKYeUv8CmL5eo_Xji-c0x19NTX8&sz=w400', zone:'argentina-norte', nota:'Fortaleza prehispánica en Jujuy.' },
-    { name:'Cafayate', url:'https://drive.google.com/thumbnail?id=1JoGF-I8Tjy6xJ0YlO1THzJKMPqrNytBk&sz=w400', zone:'argentina-norte', nota:'Tierra de viñedos en Salta.' },
-    { name:'Tren a las Nubes', url:'https://drive.google.com/thumbnail?id=168XM8s329lphZbPB8lWBu_EzdtUHJgV6&sz=w400', zone:'argentina-norte', nota:'Recorrido ferroviario a más de 4.000m.' },
-    { name:'Ruinas de Quilmes', url:'https://drive.google.com/thumbnail?id=1b217TXK5tARb4E5ha8gpOJsqd1J-MAjK&sz=w400', zone:'argentina-norte', nota:'Restos de la civilización diaguita.' },
-    { name:'Campo de Piedra Pómez', url:'https://drive.google.com/thumbnail?id=1hkSjwTHKIeiTc7SSUQX-3mMJ0IYHry4r&sz=w400', zone:'argentina-norte', nota:'Paisaje lunar en Catamarca.' },
-    { name:'Volcán Llullaillaco', url:'https://drive.google.com/thumbnail?id=160i15aGgwKQUp9zvFkF97QsdQYaXsJO_&sz=w400', zone:'argentina-norte', nota:'Uno de los volcanes más altos del mundo.' },
-    { name:'Museo de Arqueología de Alta Montaña', url:'https://drive.google.com/thumbnail?id=1SbJeLKXcy3GJIC3BIPqcWFMAtJFcqu1t&sz=w400', zone:'argentina-norte', nota:'Hogar de los Niños de Llullaillaco.' },
-    { name:'Termas de Reyes', url:'https://drive.google.com/thumbnail?id=1V4iPmI3BV6VfCrl6a391vg7pGdXoiySI&sz=w400', zone:'argentina-norte', nota:'Aguas termales en Jujuy.' },
-];
-const argentinaCentroPhotos = [
-    { name:'Obelisco', url:'https://drive.google.com/thumbnail?id=10ZOMdYNbi5kOhyMKx5eHkkjNZUm_jl6I&sz=w400', zone:'argentina-centro', nota:'El ícono de Buenos Aires, inaugurado en 1936.' },
-    { name:'Barrio La Boca', url:'https://drive.google.com/thumbnail?id=1zrmqqgnLiZyi5ZWeCNtL_MkdPX_h6PsI&sz=w400', zone:'argentina-centro', nota:'Casas de colores y tango en Buenos Aires.' },
-    { name:'Mar del Plata', url:'https://drive.google.com/thumbnail?id=10sHvR-SShb3lgvR7Bdn6cUt_xWdEijPz&sz=w400', zone:'argentina-centro', nota:'Playas y puerto de la costa atlántica.' },
-    { name:'Sierras de Córdoba', url:'https://drive.google.com/thumbnail?id=1kR5_cjsNN0pQC-J3BrhBKIBI-Bq9s8bU&sz=w400', zone:'argentina-centro', nota:'Paisaje serrano en el centro argentino.' },
-    { name:'Bodega Mendoza', url:'https://drive.google.com/thumbnail?id=1WvP8y01OhQ_mpCxaIzwUuXyNE4GT7Kun&sz=w400', zone:'argentina-centro', nota:'Ruta del vino en la región de Cuyo.' },
-    { name:'Cerro de la Gloria', url:'https://drive.google.com/thumbnail?id=1HC3JynlYZZ1SuR-51nO7jJhCisDxx97x&sz=w400', zone:'argentina-centro', nota:'Monumento histórico en Mendoza.' },
-    { name:'Teatro Colón', url:'https://drive.google.com/thumbnail?id=1Rw51ZPGayYMNoGgXVkSkvl9yYkwpVaGe&sz=w400', zone:'argentina-centro', nota:'Uno de los teatros de ópera más importantes del mundo.' },
-    { name:'Puente Colgante', url:'https://drive.google.com/thumbnail?id=1IrFr17SSrT_yh4exd19gse-IKkSKM2du&sz=w400', zone:'argentina-centro', nota:'Ícono de la ciudad de Santa Fe.' },
-    { name:'Reloj Cucú', url:'https://drive.google.com/thumbnail?id=1NA9uzV_uaF9ri3HbF_ZAVdWnuk_VpXgp&sz=w400', zone:'argentina-centro', nota:'Atracción turística de La Falda, Córdoba.' },
-    { name:'Bosques de Palermo', url:'https://drive.google.com/thumbnail?id=1uIr44S0CaPur3-w64phRPawwL9leVn0Z&sz=w400', zone:'argentina-centro', nota:'Pulmón verde de la Ciudad de Buenos Aires.' },
-    { name:'Catedral de Salta', url:'https://drive.google.com/thumbnail?id=1lkzlryApUwl3UiTqIUJLqNVOCX3h-_BI&sz=w400', zone:'argentina-centro', nota:'Arquitectura colonial en el norte argentino.' },
-    { name:'Cabildo de Buenos Aires', url:'https://drive.google.com/thumbnail?id=1Hhm3aqA4654w9zRqGGEOkcpNhBNZk6qj&sz=w400', zone:'argentina-centro', nota:'Histórico edificio de la época colonial.' },
-];
-const argentinaPatagoniaPhotos = [
-    { name:'Glaciar Perito Moreno', url:'https://drive.google.com/thumbnail?id=1CpP4mNkUsguTJc3ogku5O_rFvznW3oOl&sz=w400', zone:'argentina-patagonia', nota:'El glaciar más famoso de la Patagonia argentina.' },
-    { name:'Ushuaia', url:'https://drive.google.com/thumbnail?id=1mhDWXZwJMPdRmuMSMmmFjagu0HrYrheu&sz=w400', zone:'argentina-patagonia', nota:'La ciudad más austral del mundo.' },
-    { name:'Cerro Chaltén', url:'https://drive.google.com/thumbnail?id=1qfmMulhoOaDGYTBDAyX7tc9NOLgiactp&sz=w400', zone:'argentina-patagonia', nota:'Imponente montaña en la Patagonia.' },
-    { name:'Bariloche', url:'https://drive.google.com/thumbnail?id=1Tny2syXcCZbm-GzlTT10I6MsQ_QjA6uW&sz=w400', zone:'argentina-patagonia', nota:'Lagos y montañas en Río Negro.' },
-    { name:'Cueva de las Manos', url:'https://drive.google.com/thumbnail?id=1thIyH39oAdz1xMuMVaGz_kzLgbN8T4fQ&sz=w400', zone:'argentina-patagonia', nota:'Pinturas rupestres de más de 9.000 años.' },
-    { name:'Puerto Madryn', url:'https://drive.google.com/thumbnail?id=1DJ4I59mDo4ezdBpmtwtihRao9aB62_cy&sz=w400', zone:'argentina-patagonia', nota:'Avistaje de ballenas en Chubut.' },
-    { name:'Tren del Fin del Mundo', url:'https://drive.google.com/thumbnail?id=13fSVdYz8QQCMlpfuL0zI6hKBFL_akKPN&sz=w400', zone:'argentina-patagonia', nota:'Ferrocarril histórico en Ushuaia.' },
-    { name:'Lago Argentino', url:'https://drive.google.com/thumbnail?id=1vOIHBROl5MttXEkydQjd-zPTAVavugpO&sz=w400', zone:'argentina-patagonia', nota:'El lago más grande de Argentina.' },
-    { name:'Bosque Petrificado', url:'https://drive.google.com/thumbnail?id=1KvTg6KlQu_yasKc93hVY5vc0jQt-r-DC&sz=w400', zone:'argentina-patagonia', nota:'Restos fósiles en Santa Cruz.' },
-    { name:'El Calafate', url:'https://drive.google.com/thumbnail?id=1qMcxmtSV4WUmtBtg7m9u8CpsuOg1a9DQ&sz=w400', zone:'argentina-patagonia', nota:'Puerta de entrada al glaciar Perito Moreno.' },
-    { name:'Cerro Tronador', url:'https://drive.google.com/thumbnail?id=1R2sw4o75kemK39snxurKc-AtX_8VA7r-&sz=w400', zone:'argentina-patagonia', nota:'Montaña con glaciares colgantes.' },
-    { name:'Punta Tombo', url:'https://drive.google.com/thumbnail?id=1EVi3-6eyImqmdGu_11bBBEg42XC4Fs61&sz=w400', zone:'argentina-patagonia', nota:'La colonia de pingüinos más grande de Sudamérica.' },
-];
-const argentinaLitoralPhotos = [
-    { name:'Cataratas del Iguazú', url:'https://drive.google.com/thumbnail?id=1OuzQI_YpKYOVwc9KwRwNmXN6OdCjRtTW&sz=w400', zone:'argentina-litoral', nota:'Maravilla natural en Misiones, frontera con Brasil.' },
-    { name:'Parque Nacional Talampaya', url:'https://drive.google.com/thumbnail?id=1uxxaHlPhEaU4bAl4uVUL9rmHlm79ZMmh&sz=w400', zone:'argentina-litoral', nota:'Formaciones rocosas en La Rioja.' },
-    { name:'Ruinas de San Ignacio', url:'https://drive.google.com/thumbnail?id=1jRCowaPfltVWht7n-v_6PdEhua3YpFXt&sz=w400', zone:'argentina-litoral', nota:'Misiones jesuíticas en Misiones.' },
-    { name:'Puerto Iguazú', url:'https://drive.google.com/thumbnail?id=1Frz-zvaqu72Jzw3s6Y687JtVCrVclEz2&sz=w400', zone:'argentina-litoral', nota:'Ciudad fronteriza con Brasil y Paraguay.' },
-    { name:'Costanera de Rosario', url:'https://drive.google.com/thumbnail?id=1OeE1B0kFzgggFyWevpQyIF_IdHGV_dSV&sz=w400', zone:'argentina-litoral', nota:'Paseo junto al río Paraná.' },
-    { name:'Parque Nacional El Palmar', url:'https://drive.google.com/thumbnail?id=1s_E0F1wrwNBEHaIcjt7L0dO1P6tcXraM&sz=w400', zone:'argentina-litoral', nota:'Palmeras yatay en Entre Ríos.' },
-    { name:'Termas de Colón', url:'https://drive.google.com/thumbnail?id=1WWCbcu93lI3lUlXRJQdsoWIEL9oUP74i&sz=w400', zone:'argentina-litoral', nota:'Aguas termales en Entre Ríos.' },
-    { name:'Esteros del Iberá', url:'https://drive.google.com/thumbnail?id=1yLmtbooXH-0mtJdC4lHPsd90bqrj3d10&sz=w400', zone:'argentina-litoral', nota:'Humedales y fauna en Corrientes.' },
-    { name:'Basílica de Luján', url:'https://drive.google.com/thumbnail?id=11jON7WP6SKzhhwrBT5kyc_B36EA1oSXA&sz=w400', zone:'argentina-litoral', nota:'Santuario católico en Buenos Aires.' },
-    { name:'Monumento a la Bandera', url:'https://drive.google.com/thumbnail?id=1e8iXmJwVlPv-PogjsexcSjODR5wnZKq5&sz=w400', zone:'argentina-litoral', nota:'Ícono de la ciudad de Rosario.' },
-    { name:'Puente Rosario-Victoria', url:'https://drive.google.com/thumbnail?id=1HDySZD2cL6j_zUKtAwrDZ3Ooy_FivXiv&sz=w400', zone:'argentina-litoral', nota:'Conecta Rosario con Victoria.' },
-    { name:'Mina Wanda', url:'https://drive.google.com/thumbnail?id=1ZZNrOEqdcVIT_sbdr57FkeeEnOZJcls6&sz=w400', zone:'argentina-litoral', nota:'Mina de piedras preciosas en Misiones.' },
-];
-const mexicoNortePhotos = [
-    { name:'Cañón del Cobre', url:'https://drive.google.com/thumbnail?id=11iYN2ZNRxF6jSGqL2kq5euBNLniu_Qqw&sz=w400', zone:'mexico-norte', nota:'Sistema de cañones en Chihuahua, más grande que el del Colorado.' },
-    { name:'Dunas de Samalayuca', url:'https://drive.google.com/thumbnail?id=1dAzA4IjDqVzn4X5VdGXgmfywYmHS5ntk&sz=w400', zone:'mexico-norte', nota:'Imponentes dunas en el desierto de Chihuahua.' },
-    { name:'Cascada de Basaseachi', url:'https://drive.google.com/thumbnail?id=1EgLFXZgc_J8vbapy49cnMxEzhxyph3lF&sz=w400', zone:'mexico-norte', nota:'La cascada más alta de México con 246 metros.' },
-    { name:'Sierra del Carmen', url:'https://drive.google.com/thumbnail?id=1z0lvQo__xxUZIiUDJVTOV7Pqoto3EFJd&sz=w400', zone:'mexico-norte', nota:'Reserva natural en la frontera de Coahuila y Texas.' },
-    { name:'Cumbres de Monterrey', url:'https://drive.google.com/thumbnail?id=17v9d89qxcwarJt1KnjlSN4MQ-Oa3xbx-&sz=w400', zone:'mexico-norte', nota:'Imponentes montañas en Nuevo León.' },
-    { name:'Grutas de García', url:'https://drive.google.com/thumbnail?id=1GNOu7WhWT21V2Nmbb5NGODSdVQ3OBah9&sz=w400', zone:'mexico-norte', nota:'Impresionantes cuevas en Nuevo León.' },
-    { name:'Valle de los Fantasmas', url:'https://drive.google.com/thumbnail?id=1IIPmf-hcvKGmKeB8Uq6p6n38DSR5EI_Z&sz=w400', zone:'mexico-norte', nota:'Formaciones rocosas únicas en Nuevo León.' },
-    { name:'Zona del Silencio', url:'https://drive.google.com/thumbnail?id=1CNLEvaIPuMohelHfZPR2bZ0JaJuxvv6Z&sz=w400', zone:'mexico-norte', nota:'Área desértica en Durango rodeada de misterio.' },
-    { name:'Puente Baluarte', url:'https://drive.google.com/thumbnail?id=17743PcwVJF8hXz-Kjqcwx1DWDR-C0PnA&sz=w400', zone:'mexico-norte', nota:'El puente atirantado más alto de América.' },
-    { name:'Isla Tiburón', url:'https://drive.google.com/thumbnail?id=16YR-PBB-Mlovp-T6UCpsGrUM3aeHOSRw&sz=w400', zone:'mexico-norte', nota:'La isla más grande de México, en Sonora.' },
-    { name:'Desierto de Altar', url:'https://drive.google.com/thumbnail?id=1aNchwj76SLEtXEteKqItWqtLFI70pTLX&sz=w400', zone:'mexico-norte', nota:'Vasto desierto en Sonora con dunas cambiantes.' },
-    { name:'Creel', url:'https://drive.google.com/thumbnail?id=1hfZpv99DoeOXjtvyOVrfs6BZrZMQcVoL&sz=w400', zone:'mexico-norte', nota:'Pueblo Mágico en la Sierra Tarahumara.' },
-];
-const mexicoCentroPhotos = [
-    { name:'Zócalo CDMX', url:'https://drive.google.com/thumbnail?id=1C8XZ_N5u8Ajtpl6i9kQ0zr3zycifaGN7&sz=w400', zone:'mexico-centro', nota:'Plaza principal de la Ciudad de México.' },
-    { name:'Bellas Artes', url:'https://drive.google.com/thumbnail?id=1WI5QZB_qHtzD_RX5NgHZza4VWfJWqrH0&sz=w400', zone:'mexico-centro', nota:'Ícono cultural de la Ciudad de México.' },
-    { name:'Xochimilco', url:'https://drive.google.com/thumbnail?id=1VsZs5alPe9h7xHeYfiHGbsx6Mr54KVBT&sz=w400', zone:'mexico-centro', nota:'Canales y trajineras en la Ciudad de México.' },
-    { name:'Basílica de Guadalupe', url:'https://drive.google.com/thumbnail?id=1mPie5m_w8rcyqeiHN393qhC2vHQhHP8C&sz=w400', zone:'mexico-centro', nota:'Santuario mariano más visitado del mundo.' },
-    { name:'Teotihuacán', url:'https://drive.google.com/thumbnail?id=1CmNy4rANRzEuN78LUeyjmdGvjlgZZJBL&sz=w400', zone:'mexico-centro', nota:'Antigua ciudad de pirámides en el Estado de México.' },
-    { name:'Taxco', url:'https://drive.google.com/thumbnail?id=1iuaj-mliBGXKYYaIc94_juUUVZDEK8WV&sz=w400', zone:'mexico-centro', nota:'Pueblo Mágico platero en Guerrero.' },
-    { name:'Peña de Bernal', url:'https://drive.google.com/thumbnail?id=1MtL8HccDRt1QCiKYEGYjvbqMWefvs0zh&sz=w400', zone:'mexico-centro', nota:'Monolito natural en Querétaro.' },
-    { name:'Acueducto Querétaro', url:'https://drive.google.com/thumbnail?id=16IWM61-1g8dMHUjFFOmBSa59lfkNuudj&sz=w400', zone:'mexico-centro', nota:'Símbolo de la ciudad de Querétaro.' },
-    { name:'San Miguel de Allende', url:'https://drive.google.com/thumbnail?id=1XkCmuyL-CgxRgYYHNH8ALpZ-VsFSbmHz&sz=w400', zone:'mexico-centro', nota:'Ciudad colonial en Guanajuato.' },
-    { name:'Guanajuato', url:'https://drive.google.com/thumbnail?id=18p224Z-ZRoPbY0AneK0O1f2NA_o_OlMz&sz=w400', zone:'mexico-centro', nota:'Ciudad minera colorida y cultural.' },
-    { name:'Catedral de Morelia', url:'https://drive.google.com/thumbnail?id=1E-oVFOgOPzYp4srd4KCqF5P85-7MHggl&sz=w400', zone:'mexico-centro', nota:'Catedral barroca en Michoacán.' },
-    { name:'Mariposa Monarca', url:'https://drive.google.com/thumbnail?id=1sjwUvycZ2IFG63tvdAWp6T6R7F-Um4so&sz=w400', zone:'mexico-centro', nota:'Reserva de la mariposa monarca en Michoacán.' },
-];
-const mexicoSurPhotos = [
-    { name:'Monte Albán', url:'https://drive.google.com/thumbnail?id=1gOcZbjPfsR83y7-IIHoAhApP3fyKXEId&sz=w400', zone:'mexico-sur', nota:'Antigua ciudad zapoteca en Oaxaca.' },
-    { name:'Hierve el Agua', url:'https://drive.google.com/thumbnail?id=1F510KIRkDEBXmtbQxLyPBfPDwv4eOx1j&sz=w400', zone:'mexico-sur', nota:'Cascadas petrificadas en Oaxaca.' },
-    { name:'Árbol del Tule', url:'https://drive.google.com/thumbnail?id=15F0AOK2MRDfCtT2kNZiz-2A9Zt5FWMZG&sz=w400', zone:'mexico-sur', nota:'El árbol con el tronco más ancho del mundo.' },
-    { name:'Cañón del Sumidero', url:'https://drive.google.com/thumbnail?id=1AY-dZyVuAfJUCr5a6XIo6xeSSygLifDF&sz=w400', zone:'mexico-sur', nota:'Imponente cañón en Chiapas.' },
-    { name:'San Cristóbal', url:'https://drive.google.com/thumbnail?id=1RTAxi1MUG3Gfn99H-NWZ9u8q9jAw2CHv&sz=w400', zone:'mexico-sur', nota:'Pueblo Mágico colonial en Chiapas.' },
-    { name:'Palenque', url:'https://drive.google.com/thumbnail?id=1xv1tCq-CLvPzLmGivPoDgxB6ZaoE6zam&sz=w400', zone:'mexico-sur', nota:'Zona arqueológica maya en Chiapas.' },
-    { name:'Cascadas de Agua Azul', url:'https://drive.google.com/thumbnail?id=1xdFIvo_2J5oQYP30r7S5i5s6dc_43naK&sz=w400', zone:'mexico-sur', nota:'Cascadas de color turquesa en Chiapas.' },
-    { name:'Lagunas de Montebello', url:'https://drive.google.com/thumbnail?id=1u3eIcjz79xdFoSumym1kwpa4D-vsKB7Y&sz=w400', zone:'mexico-sur', nota:'Conjunto de lagunas en Chiapas.' },
-    { name:'Volcán Popocatépetl', url:'https://drive.google.com/thumbnail?id=1M5JkHP-flrWAqAaNKFz12y_6Rr1-DJNF&sz=w400', zone:'mexico-sur', nota:'Volcán activo entre Puebla y Morelos.' },
-    { name:'Catedral de Puebla', url:'https://drive.google.com/thumbnail?id=1DaNTAgluNsp4XpKmombeG0nJIInIU9W3&sz=w400', zone:'mexico-sur', nota:'Catedral renacentista en Puebla.' },
-    { name:'Tepoztlán', url:'https://drive.google.com/thumbnail?id=1261PjaEpx1x1hWlXKxmNXeI18ai8zwlt&sz=w400', zone:'mexico-sur', nota:'Pueblo Mágico en Morelos con el cerro del Tepozteco.' },
-    { name:'Grutas de Cacahuamilpa', url:'https://drive.google.com/thumbnail?id=1MkwNsgI2pi1AGB1KfWFgQkvzdV45XLVj&sz=w400', zone:'mexico-sur', nota:'Espectaculares grutas en Guerrero.' },
-];
-const mexicoCaribePhotos = [
-    { name:'Chichén Itzá', url:'https://drive.google.com/thumbnail?id=1jA5Sxah7QbB0rxzar-lGbSvXWhA-reqb&sz=w400', zone:'mexico-caribe', nota:'Maravilla del mundo moderno en Yucatán.' },
-    { name:'Tulum', url:'https://drive.google.com/thumbnail?id=12shfaStYT9_agFpZS-ewzD8Jj-tpJaVW&sz=w400', zone:'mexico-caribe', nota:'Ruinas mayas frente al mar Caribe.' },
-    { name:'Cenote Ik Kil', url:'https://drive.google.com/thumbnail?id=1L8SBXEY0KStrUCmZAx32S4yOk7AfqtBg&sz=w400', zone:'mexico-caribe', nota:'Cenote sagrado en Yucatán.' },
-    { name:'Playa del Carmen', url:'https://drive.google.com/thumbnail?id=1w3OcH6iTq2_oSjTPMPuTqErGFrvVlTQO&sz=w400', zone:'mexico-caribe', nota:'Playas caribeñas en Quintana Roo.' },
-    { name:'Isla Mujeres', url:'https://drive.google.com/thumbnail?id=1A-vnc1A5smvuergSKDB2xnLEz-H9NK_V&sz=w400', zone:'mexico-caribe', nota:'Isla paradisíaca en Quintana Roo.' },
-    { name:'Cozumel', url:'https://drive.google.com/thumbnail?id=1Dr9EF-zq2fxSe3HEqzRj-xgh3NARdzIq&sz=w400', zone:'mexico-caribe', nota:'Isla caribeña con arrecifes de coral.' },
-    { name:'Bacalar', url:'https://drive.google.com/thumbnail?id=1pKRnbbYunsPVwW9jJVE9VErvWu-Z4zkl&sz=w400', zone:'mexico-caribe', nota:'Laguna de los 7 colores en Quintana Roo.' },
-    { name:'Uxmal', url:'https://drive.google.com/thumbnail?id=1hAtR0zNioqtQEQgJiGHkmF94lUW3DGBE&sz=w400', zone:'mexico-caribe', nota:'Zona arqueológica maya en Yucatán.' },
-    { name:'Mérida', url:'https://drive.google.com/thumbnail?id=1IKaYbeoQRpv73Xrl0cHcGCKPKfNP7X51&sz=w400', zone:'mexico-caribe', nota:'Capital cultural de Yucatán.' },
-    { name:'Calakmul', url:'https://drive.google.com/thumbnail?id=1CH7B4Xp--LywDUVrne6hmmg0gIIE1Rr1&sz=w400', zone:'mexico-caribe', nota:'Antigua ciudad maya en Campeche.' },
-    { name:'Campeche', url:'https://drive.google.com/thumbnail?id=1vjpTTM_OuwSmHm95edrkDxaOUAICt0PR&sz=w400', zone:'mexico-caribe', nota:'Ciudad amurallada en Campeche.' },
-    { name:'Cenote Dos Ojos', url:'https://drive.google.com/thumbnail?id=1FEnFLMCVGyTjnr07me3aFYNlbsKtfLA5&sz=w400', zone:'mexico-caribe', nota:'Cenote famoso para buceo en Quintana Roo.' },
-];
-const villarricaPhotos = [
-    { name:'Villarrica 1', url:'https://drive.google.com/thumbnail?id=1DtfuiaOzwwNuonJ__siHtNp5bkQrcdvy&sz=w400', nota:'Lago al atardecer.' },
-    { name:'Villarrica 2', url:'https://drive.google.com/thumbnail?id=13pgYQFfItKdMXM4I6Z2hTykbhyEqzHSb&sz=w400', nota:'Vista desde Pucón.' },
-    { name:'Villarrica 3', url:'https://drive.google.com/thumbnail?id=1U7D4Or9FnEf4OwUpVVzl08Rp9o9JDrjs&sz=w400', nota:'Navegando frente al coloso.' },
-    { name:'Villarrica 4', url:'https://drive.google.com/thumbnail?id=15IgWa1AsKjwk7tTRGEO2ro8DTlJbcj--&sz=w400', nota:'Bosques en la Araucanía.' },
-    { name:'Villarrica 5', url:'https://drive.google.com/thumbnail?id=1qysQ8h-YHQyh5Mg4opZzsTAmnDQIMG-t&sz=w400', nota:'El rugido del volcán.' },
-    { name:'Villarrica 6', url:'https://drive.google.com/thumbnail?id=1LO2MAuNFcdTjhjDPxS5Ousw3HBnVkh-g&sz=w400', nota:'Termas cerca del volcán.' },
-    { name:'Villarrica 7', url:'https://drive.google.com/thumbnail?id=183L3Zri6qcm6leHek4j-LulR3hUVomfK&sz=w400', nota:'Amanecer en el lago.' },
-    { name:'Villarrica 8', url:'https://drive.google.com/thumbnail?id=1P7m6YU1U2hIQ6KT7jxfs9Smq7bKhnmmO&sz=w400', nota:'El volcán de noche.' },
-    { name:'Villarrica 9', url:'https://drive.google.com/thumbnail?id=1Z2-Sxmlpm9hihM-ZNmKUarB2nHyX_Ly9&sz=w400', nota:'Paisajes que enamoran.' },
-];
-const valparaisoPhotos = [
-    { name:'Valpo 1', url:'https://drive.google.com/thumbnail?id=1WM5sd8aZyPDfeoyczNgYRKIRH2GToOJC&sz=w400', nota:'Vista del puerto patrimonial.' },
-    { name:'Valpo 2', url:'https://drive.google.com/thumbnail?id=1ZiwDZKB6TyV6vJvqMYeqGCdd5HSNL6nx&sz=w400', nota:'Cerros coloridos.' },
-    { name:'Valpo 3', url:'https://drive.google.com/thumbnail?id=1eh776MPiWs6ry44Hd5BFxuZN4cqurNkF&sz=w400', nota:'Calles museo.' },
-    { name:'Valpo 4', url:'https://drive.google.com/thumbnail?id=1EWM0KGofQJJ3VX6-iTMnT5K6RGMJwmzq&sz=w400', nota:'Murales porteños.' },
-    { name:'Valpo 5', url:'https://drive.google.com/thumbnail?id=1XzDDJ2_a7nHV_owPvLzVxBPax0Bd1OZj&sz=w400', nota:'Ascensores centenarios.' },
-    { name:'Valpo 6', url:'https://drive.google.com/thumbnail?id=1Id4QQXiPgqSz0gbKoCTDdTzDP-KPC6Fo&sz=w400', nota:'Casas de colores.' },
-    { name:'Valpo 7', url:'https://drive.google.com/thumbnail?id=1Hn9Y4bxYWUqVifIbREzfnsrV40SOKJ9R&sz=w400', nota:'Puerto de poetas.' },
-    { name:'Valpo 8', url:'https://drive.google.com/thumbnail?id=1_rqH51EFskHxRpzDIV8fXt9rZLuLem4l&sz=w400', nota:'Atardeceres mágicos.' },
-    { name:'Valpo 9', url:'https://drive.google.com/thumbnail?id=1Lq0s16e6S5reutW03wfY2bFaP5ZdLUmB&sz=w400', nota:'Joya del Pacífico.' },
-    { name:'Valpo 10', url:'https://drive.google.com/thumbnail?id=1Oj8J0SWtItxwpAEcvaEUo04MlrGUiJcv&sz=w400', nota:'Escaleras al cielo.' },
-];
-
-const traditionalTiles = [
-    { name:'Bambú 1', symbol:'一' },{ name:'Bambú 2', symbol:'二' },{ name:'Bambú 3', symbol:'三' },
-    { name:'Bambú 4', symbol:'四' },{ name:'Bambú 5', symbol:'五' },{ name:'Bambú 6', symbol:'六' },
-    { name:'Bambú 7', symbol:'七' },{ name:'Bambú 8', symbol:'八' },{ name:'Bambú 9', symbol:'九' },
-    { name:'Carácter 1', symbol:'一' },{ name:'Carácter 2', symbol:'二' },{ name:'Carácter 3', symbol:'三' },
-    { name:'Carácter 4', symbol:'四' },{ name:'Carácter 5', symbol:'五' },{ name:'Carácter 6', symbol:'六' },
-    { name:'Carácter 7', symbol:'七' },{ name:'Carácter 8', symbol:'八' },{ name:'Carácter 9', symbol:'九' },
-    { name:'Círculo 1', symbol:'●' },{ name:'Círculo 2', symbol:'◎' },{ name:'Círculo 3', symbol:'◉' },
-    { name:'Círculo 4', symbol:'◯' },{ name:'Círculo 5', symbol:'⬤' },{ name:'Círculo 6', symbol:'⭕' },
-    { name:'Círculo 7', symbol:'⚫' },{ name:'Círculo 8', symbol:'🔴' },{ name:'Círculo 9', symbol:'🔵' },
-    { name:'Viento Este', symbol:'東' },{ name:'Viento Sur', symbol:'南' },
-    { name:'Viento Oeste', symbol:'西' },{ name:'Viento Norte', symbol:'北' },
-    { name:'Dragón Rojo', symbol:'中' },{ name:'Dragón Verde', symbol:'發' },{ name:'Dragón Blanco', symbol:'白' },
-    { name:'Primavera', symbol:'春' },{ name:'Verano', symbol:'夏' },
-    { name:'Otoño', symbol:'秋' },{ name:'Invierno', symbol:'冬' },
-    { name:'Ciruelo', symbol:'梅' },{ name:'Orquídea', symbol:'蘭' },
-    { name:'Crisantemo', symbol:'菊' },{ name:'Bambú Flor', symbol:'竹' },
-    { name:'Dragón Dorado', symbol:'龍' },{ name:'Fénix', symbol:'鳳' },
-    { name:'Tigre', symbol:'虎' },{ name:'Tortuga', symbol:'亀' },
-];
-
-const ZONES = [
-    { id:'norte', name:'NORTE', icon:'🏜️', country:'chile', photos:nortePhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'centro', name:'CENTRO', icon:'🏛️', country:'chile', photos:centroPhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'sur', name:'SUR', icon:'🌋', country:'chile', photos:surPhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'austral', name:'AUSTRAL', icon:'🗻', country:'chile', photos:patagoniaPhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'argentina-norte', name:'ARG NORTE', icon:'🏜️', country:'argentina', photos:argentinaNortePhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'argentina-centro', name:'ARG CENTRO', icon:'🏛️', country:'argentina', photos:argentinaCentroPhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'argentina-patagonia', name:'ARG PATAGONIA', icon:'🗻', country:'argentina', photos:argentinaPatagoniaPhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'argentina-litoral', name:'ARG LITORAL', icon:'🌴', country:'argentina', photos:argentinaLitoralPhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'mexico-norte', name:'MX NORTE', icon:'🏜️', country:'mexico', photos:mexicoNortePhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'mexico-centro', name:'MX CENTRO', icon:'🏛️', country:'mexico', photos:mexicoCentroPhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'mexico-sur', name:'MX SUR', icon:'🌋', country:'mexico', photos:mexicoSurPhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-    { id:'mexico-caribe', name:'MX CARIBE', icon:'🌴', country:'mexico', photos:mexicoCaribePhotos, levels:[ {num:1,pairs:6},{num:2,pairs:8},{num:3,pairs:10},{num:4,pairs:12},{num:5,pairs:14},{num:6,pairs:16},{num:7,pairs:18},{num:8,pairs:20},{num:9,pairs:24},{num:10,pairs:28} ] },
-];
-
-const MINIGAMES = {
-    'centro-3': { name:'Memorice de Valparaíso', type:'memorice', icon:'🎨', photos: valparaisoPhotos },
-    'sur-5': { name:'Memorice de Villarrica', type:'memorice', icon:'🌋', photos: villarricaPhotos },
-};
-
-const ACHIEVEMENTS = [
-    { id:'complete_chile', name:'Chile Completo', desc:'Consigue 3 estrellas en todos los niveles de Chile', icon:'🇨🇱', check:()=> getTotalStarsForCountry('chile') >= 120 },
-    { id:'complete_argentina', name:'Argentina Completa', desc:'Consigue 3 estrellas en todos los niveles de Argentina', icon:'🇦🇷', check:()=> getTotalStarsForCountry('argentina') >= 120 },
-    { id:'complete_mexico', name:'México Completo', desc:'Consigue 3 estrellas en todos los niveles de México', icon:'🇲🇽', check:()=> getTotalStarsForCountry('mexico') >= 120 },
-];
-
-// ========== INTERFAZ DE USUARIO (UI) – COMPLETA ==========
-const UI = (function() {
-    let currentZone = null, currentLevel = null, coins = parseInt(localStorage.getItem('coins') || '0');
-    let tutorialActive = false, tutorialStep = 0, tutorialZoneId = null;
-    let rewardCallback = null, adCount = 0;
-    const AD_EVERY = 5;
-
-    let memoricePhotos = [], memoriceCards = [], memoriceFlipped = [], memoriceMatched = 0, memoriceLocked = false;
-
-    function getStars(z, n) { return parseInt(localStorage.getItem(`zone_${z}_level_${n}`) || '0'); }
-    function setStars(z, n, s) { localStorage.setItem(`zone_${z}_level_${n}`, s); }
-    function isUnlocked(z, n) { return n === 1 || getStars(z, n - 1) >= 1; }
-    function addCoins(amount) { coins += amount; localStorage.setItem('coins', coins); }
-    function getTotalStarsForCountry(country) { return ZONES.filter(z => z.country === country).reduce((s, z) => s + z.levels.reduce((ss, l) => ss + getStars(z.id, l.num), 0), 0); }
-
-    GameEngine.setOnStateChange((event, data) => {
-        if (event === 'boardChanged') renderBoard();
-        else if (event === 'match') { const { a, b } = data; if (a.url && b.url && a.zone && a.zone === currentZone.id) { const photo = currentZone.photos.find(p => p.url === a.url) || a; showZoomAndNote(photo); } updateSlotsUI(); }
-        else if (event === 'slotsfull') showMessage('⚠️ Sin coincidencias');
-        else if (event === 'timer') updateTimerDisplay(data.timeLeft);
-        else if (event === 'timeout') { showMessage('⏰ ¡Tiempo agotado!'); setTimeout(() => showZone(currentZone.id), 1500); }
-        else if (event === 'victory') {
-            const { score } = data; let stars = score >= 2000 ? 3 : score >= 1000 ? 2 : 1;
-            setStars(currentZone.id, currentLevel.num, stars); addCoins(stars);
-            document.getElementById('victoryIcon').textContent = '🏆';
-            document.getElementById('victoryName').textContent = `${currentZone.name} Nivel ${currentLevel.num}`;
-            document.getElementById('starsDisplay').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
-            document.getElementById('victoryModal').style.display = 'flex'; spawnVictoryParticles();
-            adCount++; if (adCount >= AD_EVERY) { adCount = 0; showInterstitialAd(() => {}); } checkAchievements();
-        } else if (event === 'hint') showMessage(`💡 Busca: ${data.name}`);
-    });
-
-    function renderBoard() {
-        const c = document.getElementById('boardContainer'); if (!c) return;
-        const tiles = GameEngine.getTiles(); const vt = tiles.filter(t => !t.matched && !t.inSlot);
-        if (vt.length === 0) { c.innerHTML = ''; return; }
-        const w = c.clientWidth - 16, margin = 10, COLS = 6, cw = (w - margin * 2) / COLS, ch = cw * 1.45;
-        const maxRow = Math.max(...vt.map(t => t.row), 0), maxLayer = Math.max(...vt.map(t => t.layer), 0);
-        const nh = Math.max((maxRow + 1) * ch + margin * 2 + (maxLayer * 15) + 20, 300);
-        c.style.minHeight = nh + 'px'; c.innerHTML = '';
-        const inner = document.createElement('div'); inner.style.cssText = `position:relative;width:100%;display:flex;align-items:center;justify-content:center;height:${nh}px;`;
-        const grid = document.createElement('div'); grid.style.cssText = `position:relative;width:${COLS * cw}px;height:${(maxRow + 1) * ch + maxLayer * 15}px;transform-style:preserve-3d;`;
-        vt.forEach((t) => {
-            const el = document.createElement('div'); el.className = 'vita-tile'; if (t.bonus) el.classList.add('bonus-tile');
-            el.style.left = `${t.col * cw + margin}px`; el.style.top = `${t.row * ch + margin + t.layer * 12}px`;
-            el.style.width = `${cw - 4}px`; el.style.height = `${ch - 4}px`; el.style.zIndex = t.layer * 100 + Math.floor(t.row * 2);
-            el.style.transform = `rotate(${(Math.random() - 0.5) * 2}deg) translateZ(${t.layer * 2}px)`;
-            const td = tiles.indexOf(t), isSel = (GameEngine.getSelectedTileIdx() === td);
-            if (t.faceDown && !t.revealed) { el.classList.add('face-down'); const pat = document.createElement('div'); pat.className = 'card-back-pattern'; const sym = document.createElement('div'); sym.className = 'card-back-symbol'; sym.textContent = '🪭'; el.appendChild(pat); el.appendChild(sym); }
-            else if (t.type === 'photo') { el.style.backgroundImage = `url(${t.url})`; el.style.backgroundSize = 'cover'; el.style.backgroundPosition = 'center'; const foil = document.createElement('div'); foil.className = 'foil-layer'; el.appendChild(foil); }
-            else { el.classList.add('bg-gradient-to-br', 'from-[#faf5eb]', 'to-[#b8a880]'); el.style.fontSize = '1.6em'; el.style.color = '#2a1a0a'; el.textContent = t.symbol; const foil = document.createElement('div'); foil.className = 'foil-layer'; foil.style.opacity = '0.3'; el.appendChild(foil); }
-            const nm = document.createElement('div'); nm.className = 'card-name'; nm.textContent = t.name || t.symbol; el.appendChild(nm);
-            if (t.blocked) el.classList.add('blocked'); else el.classList.add('free');
-            if (isSel) el.classList.add('selected-card');
-            el.onclick = () => { GameEngine.onTileClick(td); if (tutorialActive) advanceTutorial(); };
-            grid.appendChild(el);
-        });
-        inner.appendChild(grid); c.appendChild(inner); updateSlotsUI();
-        document.getElementById('pairsLeft').textContent = `${vt.length / 2} pares`;
-    }
-
-    function updateSlotsUI() {
-        const slots = GameEngine.getSlots();
-        for (let i = 0; i < 4; i++) { const el = document.getElementById(`slot-${i}`); if (!el) continue; el.innerHTML = ''; el.style.backgroundImage = ''; if (i < slots.length) { const t = slots[i]; el.className = 'w-14 h-20 rounded-lg border-2 border-primary flex items-center justify-center text-xl font-bold slot-item overflow-hidden'; if (t.url) { el.style.backgroundImage = `url(${t.url})`; el.style.backgroundSize = 'cover'; } else { el.style.background = 'linear-gradient(145deg, #f5f0e8, #d4c4a8)'; el.textContent = t.symbol; el.style.color = '#2a1a0a'; } } else { el.className = 'w-14 h-20 rounded-lg slot-empty'; el.textContent = '+'; } }
-    }
-
-    function updateTimerDisplay(tl) { const el = document.getElementById('timerDisplay'); if (el) el.textContent = `⏱ ${tl}s`; }
-    function showMessage(msg) { const el = document.getElementById('message'); if (el) { el.textContent = msg; el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 1500); } }
-
-    function showZoomAndNote(photo) {
-        const overlay = document.createElement('div'); overlay.className = 'zoom-overlay';
-        overlay.innerHTML = `<img src="${photo.url}" class="zoom-image" alt="${photo.name}" onerror="this.style.display='none';this.parentElement.querySelector('.zoom-note').innerHTML+='<p class=\'text-red-400\'>Imagen no disponible</p>'"/><div class="zoom-note"><h3 class="text-primary font-bold text-lg mb-2">${photo.name}</h3><p class="text-white/80">${photo.nota || 'Un rincón mágico.'}</p></div><button onclick="this.parentElement.remove()" class="mt-4 px-6 py-2 rounded-xl bg-white/10 text-white/70 text-sm">Cerrar</button>`;
-        document.body.appendChild(overlay); overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
-    }
-
-    function spawnVictoryParticles() { const colors = ['#f2ca50','#ffd700','#ff9f43','#4ade80','#c084fc']; for (let i = 0; i < 30; i++) { setTimeout(() => { const p = document.createElement('div'); p.className = 'particle'; p.textContent = ['🏆','⭐','✨','🎉'][Math.floor(Math.random()*4)]; p.style.left = `${20 + Math.random()*60}%`; p.style.top = `${30 + Math.random()*30}%`; p.style.setProperty('--tx', `${(Math.random()-0.5)*200}px`); p.style.setProperty('--ty', `${(Math.random()-0.5)*200-50}px`); p.style.color = colors[Math.floor(Math.random()*colors.length)]; p.style.fontSize = '24px'; p.style.position = 'fixed'; p.style.zIndex = '300'; document.body.appendChild(p); setTimeout(() => p.remove(), 1000); }, i * 30); } }
-
-    function showZone(zid) {
-        currentZone = ZONES.find(z => z.id === zid); const totalStars = currentZone.levels.reduce((s, l) => s + getStars(zid, l.num), 0); const maxStars = currentZone.levels.length * 3;
-        const backFn = currentZone.country === 'argentina' ? 'UI.showArgentineZones()' : currentZone.country === 'mexico' ? 'UI.showMexicanZones()' : 'UI.showChileZones()';
-        let html = `<div class="h-full flex flex-col bg-surface p-4 overflow-y-auto" style="padding-bottom:70px"><div class="flex items-center gap-4 mb-4"><button onclick="${backFn}" class="material-symbols-outlined text-white">arrow_back</button><span class="text-xl font-bold text-primary">${currentZone.icon} ${currentZone.name}</span><span class="ml-auto text-sm text-primary/80">⭐${totalStars}/${maxStars}</span></div><div class="space-y-2">`;
-        currentZone.levels.forEach((l) => {
-            const u = isUnlocked(zid, l.num), s = getStars(zid, l.num); const prevStars = l.num > 1 ? getStars(zid, l.num - 1) : 1; const canUnlockWithVideo = !u && prevStars < 1 && l.num > 1;
-            const miniKey = `${zid}-${l.num}`; const mini = MINIGAMES[miniKey];
-            if (mini) { html += `<div class="p-4 rounded-xl flex items-center justify-between bg-purple-500/10 border border-purple-400/30"><div><span class="text-white font-bold">${mini.icon} ${mini.name}</span><p class="text-xs text-purple-300">Minijuego especial</p></div><button onclick="event.stopPropagation();UI.showRewardedVideo(()=>UI.startMemoriceMinigame('${zid}',${l.num}),'Desbloquear minijuego')" class="px-4 py-2 rounded-xl btn-video text-sm font-bold">🎮 Jugar</button></div>`; }
-            else if (u) { html += `<div onclick="UI.selectLevel(${l.num})" class="p-4 rounded-xl flex items-center justify-between bg-white/5 border border-white/10"><div><span class="text-white font-bold">Nivel ${l.num}</span><p class="text-xs text-white/50">${l.pairs} pares</p></div><div class="text-yellow-500">${s > 0 ? '⭐'.repeat(s) + '☆'.repeat(3 - s) : '🔓'}</div></div>`; }
-            else if (canUnlockWithVideo) { html += `<div class="p-4 rounded-xl flex items-center justify-between bg-purple-500/10 border border-purple-400/30"><div><span class="text-white font-bold">Nivel ${l.num}</span><p class="text-xs text-purple-300">📺 Video para desbloquear</p></div><button onclick="event.stopPropagation();UI.showRewardedVideo(()=>UI.unlockLevelWithVideo('${zid}',${l.num}),'Desbloquear Nivel ${l.num}')" class="px-4 py-2 rounded-xl btn-video text-sm font-bold">📺 Ver</button></div>`; }
-            else { html += `<div class="p-4 rounded-xl flex items-center justify-between opacity-40"><div><span class="text-white font-bold">Nivel ${l.num}</span><p class="text-xs text-white/50">${l.pairs} pares</p></div><div class="text-yellow-500">🔒</div></div>`; }
-        });
-        html += '</div></div>'; document.getElementById('appRoot').innerHTML = html; showBannerAd();
-    }
-
-    function selectLevel(n) {
-        if (shouldStartTutorial() && n === 1 && currentZone.id === 'norte') { startTutorial(currentZone.id); return; }
-        const originalLevel = currentZone.levels.find(l => l.num === n); currentLevel = { ...originalLevel, zoneId: currentZone.id };
-        document.getElementById('appRoot').innerHTML = `<div class="h-full flex flex-col items-center justify-center bg-surface p-8 text-center"><div class="text-5xl mb-4">${currentZone.icon}</div><h2 class="text-2xl font-bold text-primary mb-2">Nivel ${currentLevel.num}</h2><p class="text-white/50 mb-2">${currentLevel.pairs} pares base</p><div class="flex gap-3 mb-4 justify-center"><button onclick="UI.startGameWithDifficulty('facil')" class="px-4 py-2 rounded-xl bg-green-500/20 border border-green-400/40 text-green-300 font-bold text-sm">🌱 Fácil</button><button onclick="UI.startGameWithDifficulty('normal')" class="px-4 py-2 rounded-xl bg-primary/20 border border-primary/40 text-primary font-bold text-sm">⚡ Normal</button><button onclick="UI.startGameWithDifficulty('dificil')" class="px-4 py-2 rounded-xl bg-red-500/20 border border-red-400/40 text-red-300 font-bold text-sm">🔥 Difícil</button></div><button onclick="UI.showZone('${currentZone.id}')" class="mt-4 text-white/50 text-sm">← Volver</button></div>`;
-    }
-
-    function startGameWithDifficulty(difficulty) {
-        let pairs = currentLevel.pairs, hintUses = 3, shuffleUses = 3, undoUses = 3;
-        if (difficulty === 'facil') { pairs = Math.max(4, pairs - 2); hintUses = 5; shuffleUses = 5; undoUses = 5; }
-        else if (difficulty === 'dificil') { pairs = pairs + 2; hintUses = 1; shuffleUses = 1; undoUses = 1; }
-        const config = { ...currentLevel, pairs, difficulty, hintUses, shuffleUses, undoUses }; tutorialActive = false; startGame(config);
-    }
-
-    function startGame(config) {
-        hideBannerAd(); GameEngine.init(config, currentZone.photos, traditionalTiles); const timeLeft = GameEngine.getTimeLeft();
-        const slotsHTML = `<div class="w-14 h-20 rounded-lg slot-empty" id="slot-0">+</div><div class="w-14 h-20 rounded-lg slot-empty" id="slot-1">+</div><div class="w-14 h-20 rounded-lg slot-empty" id="slot-2">+</div><div class="w-14 h-20 rounded-lg slot-empty" id="slot-3">+</div>`;
-        document.getElementById('appRoot').innerHTML = `<div class="h-full flex flex-col bg-surface p-3"><div class="flex items-center justify-between mb-2"><button onclick="UI.goBackFromGame()" class="material-symbols-outlined text-white">arrow_back</button><span class="text-primary font-bold" id="pairsLeft">${config.pairs} pares</span>${timeLeft > 0 ? `<span class="text-white font-bold" id="timerDisplay">⏱ ${timeLeft}s</span>` : ''}</div><div class="flex gap-1 mb-2 justify-center" id="slotsContainer">${slotsHTML}</div><div class="relative flex-1 bg-black/20 rounded-xl overflow-hidden border border-white/5" id="boardContainer" style="display:flex;align-items:center;justify-content:center;min-height:300px;perspective:800px;"></div>${tutorialActive ? '' : `<div class="flex justify-center gap-4 mt-3"><div class="power-up-btn" onclick="UI.useHint()" title="💡 Pista">💡<span class="power-up-badge" id="hintBadge">${GameEngine.getPowerUps().hintUses}</span></div><div class="power-up-btn" onclick="UI.useShuffle()" title="🔀 Mezclar">🔀<span class="power-up-badge" id="shuffleBadge">${GameEngine.getPowerUps().shuffleUses}</span></div><div class="power-up-btn" onclick="UI.undoLastSelection()" title="↩️ Deshacer">↩️<span class="power-up-badge" id="undoBadge">${GameEngine.getPowerUps().undoUses}</span></div></div>`}<div class="text-center mt-2 h-4"><span id="message" class="text-xs text-primary/80"></span></div></div>`;
-        renderBoard(); if (tutorialActive) showTutorialOverlay();
-    }
-
-    function goBackFromGame() { GameEngine.stopTimer(); if (tutorialActive) { tutorialActive = false; localStorage.setItem('tutorialCompleted', '1'); showZone(currentZone.id); } else showZone(currentZone.id); }
-    function useShuffle() { GameEngine.useShuffle(); updatePowerBadges(); }
-    function useHint() { GameEngine.useHint(); updatePowerBadges(); }
-    function undoLastSelection() { GameEngine.undoLastSelection(); updatePowerBadges(); }
-    function updatePowerBadges() { const pu = GameEngine.getPowerUps(); document.getElementById('hintBadge').textContent = pu.hintUses; document.getElementById('shuffleBadge').textContent = pu.shuffleUses; document.getElementById('undoBadge').textContent = pu.undoUses; }
-
-    function shouldStartTutorial() { return localStorage.getItem('tutorialCompleted') !== '1'; }
-    function startTutorial(zoneId) { tutorialActive = true; tutorialStep = 0; tutorialZoneId = zoneId; const zone = ZONES.find(z => z.id === zoneId); currentZone = zone; currentLevel = { ...zone.levels[0], pairs: 4, zoneId }; startGame({ ...currentLevel, difficulty: 'facil', hintUses: 99, shuffleUses: 99, undoUses: 99 }); }
-    function showTutorialOverlay() { const board = document.getElementById('boardContainer'); if (!board) return; const prev = document.querySelector('.tutorial-overlay'); if (prev) prev.remove(); const overlay = document.createElement('div'); overlay.className = 'tutorial-overlay'; overlay.id = 'tutorialOverlay'; const msg = document.createElement('div'); msg.className = 'tutorial-message'; msg.id = 'tutorialMessage'; overlay.appendChild(msg); board.appendChild(overlay); updateTutorialMessage(); }
-    function updateTutorialMessage() { const msg = document.getElementById('tutorialMessage'); if (!msg) return; const steps = ['👋 ¡Bienvenido! Elimina todos los pares de fichas.','🖱️ Toca una ficha para seleccionarla.','🔍 Ahora toca su pareja idéntica.','✅ ¡Perfecto! Sigue encontrando pares.','🔒 Las fichas bloqueadas (oscuras) no pueden seleccionarse.','🏁 Completa todos los pares para ganar.']; msg.innerHTML = `<p class="text-sm leading-relaxed">${steps[Math.min(tutorialStep, steps.length - 1)]}</p><div class="mt-4 flex gap-2 justify-center">${tutorialStep > 0 ? '<button onclick="UI.prevTutorialStep()" class="px-3 py-1 rounded-lg bg-white/10 text-white/70 text-xs">←</button>' : ''}<button onclick="UI.advanceTutorial()" class="px-4 py-1 rounded-lg btn-primary text-xs">${tutorialStep >= steps.length - 1 ? 'Empezar' : 'Siguiente →'}</button></div><button onclick="UI.skipTutorial()" class="mt-2 text-xs text-white/40 underline">Saltar tutorial</button>`; }
-    function advanceTutorial() { if (!tutorialActive) return; if (tutorialStep < 5) { tutorialStep++; updateTutorialMessage(); } else completeTutorial(); }
-    function prevTutorialStep() { if (tutorialStep > 0) { tutorialStep--; updateTutorialMessage(); } }
-    function skipTutorial() { completeTutorial(); }
-    function completeTutorial() { tutorialActive = false; localStorage.setItem('tutorialCompleted', '1'); showZone(tutorialZoneId || 'norte'); showMessage('🎉 ¡Tutorial completado!'); }
-
-    function unlockLevelWithVideo(zoneId, levelNum) { setStars(zoneId, levelNum - 1, 1); showZone(zoneId); showMessage('✅ Nivel desbloqueado'); }
-
-    // ====== MEMORICE CON 6 FOTOS ======
-    function startMemoriceMinigame(zoneId, levelNum) {
-        const mini = MINIGAMES[`${zoneId}-${levelNum}`]; if (!mini || !mini.photos) return;
-        const shuffled = [...mini.photos].sort(() => Math.random() - 0.5); memoricePhotos = shuffled.slice(0, 6);
-        memoriceCards = []; memoricePhotos.forEach((photo, idx) => { memoriceCards.push({ ...photo, pairId: idx }); memoriceCards.push({ ...photo, pairId: idx }); });
-        for (let i = memoriceCards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [memoriceCards[i], memoriceCards[j]] = [memoriceCards[j], memoriceCards[i]]; }
-        memoriceFlipped = []; memoriceMatched = 0; memoriceLocked = false;
-        if (!document.getElementById('memoriceModal')) {
-            const modal = document.createElement('div'); modal.id = 'memoriceModal'; modal.className = 'memorice-modal';
-            modal.innerHTML = `<div class="w-full max-w-sm rounded-2xl border border-primary/30 p-4" style="background:linear-gradient(145deg,rgba(23,34,30,0.95),rgba(11,21,18,0.95))"><div class="flex items-center justify-between mb-4"><span class="text-primary font-bold text-lg" id="memoriceTitle">Memorice</span><button onclick="UI.closeMemorice()" class="text-white/50 hover:text-white text-xl">✕</button></div><div class="memorice-board" id="memoriceBoard"></div></div>`;
-            document.body.appendChild(modal);
-        }
-        document.getElementById('memoriceModal').style.display = 'flex'; document.getElementById('memoriceTitle').textContent = mini.icon + ' ' + mini.name;
-        renderMemoriceBoard();
-    }
-
-    function renderMemoriceBoard() {
-        const board = document.getElementById('memoriceBoard'); if (!board) return; board.innerHTML = '';
-        memoriceCards.forEach((card, index) => {
-            const el = document.createElement('div'); el.className = 'memorice-card';
-            if (memoriceFlipped.includes(index) || card.matched) { el.classList.add('flipped'); el.innerHTML = `<img src="${card.url}" alt="${card.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-white/30\'>?</span>'">`; }
-            else { el.innerHTML = '<span class="card-back">🪭</span>'; }
-            if (card.matched) { el.classList.add('matched'); }
-            el.onclick = () => flipMemoriceCard(index); board.appendChild(el);
-        });
-    }
-
-    function flipMemoriceCard(index) {
-        if (memoriceLocked) return; if (memoriceFlipped.includes(index)) return; if (memoriceCards[index].matched) return;
-        memoriceFlipped.push(index); renderMemoriceBoard();
-        if (memoriceFlipped.length === 2) { memoriceLocked = true; const [a, b] = memoriceFlipped;
-            if (memoriceCards[a].pairId === memoriceCards[b].pairId) { memoriceCards[a].matched = true; memoriceCards[b].matched = true; memoriceMatched++; memoriceFlipped = []; memoriceLocked = false; renderMemoriceBoard(); if (memoriceMatched === 6) { setTimeout(() => { addCoins(10); document.getElementById('memoriceModal').style.display = 'none'; showMessage('🎉 ¡Memorice completado! +10 monedas'); }, 500); } }
-            else { setTimeout(() => { memoriceFlipped = []; memoriceLocked = false; renderMemoriceBoard(); }, 800); }
-        }
-    }
-
-    function closeMemorice() { const modal = document.getElementById('memoriceModal'); if (modal) modal.style.display = 'none'; }
-
-    // ====== PUBLICIDAD ======
-    function showBannerAd() { document.getElementById('ad-banner').style.display = 'flex'; googletag.cmd.push(() => { googletag.display('ad-banner'); }); }
-    function hideBannerAd() { document.getElementById('ad-banner').style.display = 'none'; }
-    function showRewardedVideo(cb, msg) { rewardCallback = cb; document.getElementById('rewardText').textContent = msg || 'Mira el video para ganar tu recompensa'; document.getElementById('rewardModal').style.display = 'flex'; }
-    function closeRewardModal() { document.getElementById('rewardModal').style.display = 'none'; rewardCallback = null; }
-    function simulateRewardedVideo() { googletag.cmd.push(() => { googletag.display(rewardedSlot); }); setTimeout(() => { document.getElementById('rewardModal').style.display = 'none'; if (rewardCallback) rewardCallback(); rewardCallback = null; }, 2000); }
-    function showInterstitialAd(cb) { googletag.cmd.push(() => { googletag.display(interstitialSlot); }); if (cb) setTimeout(cb, 500); }
-    function closeVictory() { document.getElementById('victoryModal').style.display = 'none'; showZone(currentZone.id); }
-
-    function checkAchievements() { ACHIEVEMENTS.forEach(a => { if (localStorage.getItem(`ach_${a.id}`) === '1') return; if (a.check()) { localStorage.setItem(`ach_${a.id}`, '1'); showMessage(`🏆 Logro: ${a.name}`); } }); }
-
-    function showWorldMain() {
-        const ts = ZONES.reduce((s, z) => s + z.levels.reduce((ss, l) => ss + getStars(z.id, l.num), 0), 0);
-        const cpChile = Math.round((getTotalStarsForCountry('chile') / 120) * 100), cpArgentina = Math.round((getTotalStarsForCountry('argentina') / 120) * 100), cpMexico = Math.round((getTotalStarsForCountry('mexico') / 120) * 100);
-        document.getElementById('appRoot').innerHTML = `<div class="h-full flex flex-col bg-surface overflow-y-auto" style="padding-bottom:70px"><div class="relative h-48 overflow-hidden"><img src="https://drive.google.com/thumbnail?id=1hsx1UaDia9i7oOLdeslGtGLwl0tqUP71&sz=w800" class="absolute inset-0 w-full h-full object-cover opacity-30" onerror="this.style.display='none'"/><div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface"></div><div class="absolute inset-0 flex flex-col items-center justify-center"><span class="text-4xl mb-2">🌎</span><h1 class="text-2xl font-bold text-primary text-glow tracking-widest">WORLD TOUR</h1><div class="bg-primary/10 px-3 py-1 rounded-full mt-2"><span class="text-primary text-sm font-bold">⭐ ${ts} estrellas</span></div></div></div><div class="p-4 space-y-3">${countryCard('🇨🇱','Chile',cpChile,'UI.showChileZones()')}${countryCard('🇦🇷','Argentina',cpArgentina,'UI.showArgentineZones()')}${countryCard('🇲🇽','México',cpMexico,'UI.showMexicanZones()')}<div class="relative rounded-2xl overflow-hidden border border-dashed border-white/20 opacity-60" style="background:rgba(255,255,255,0.02)"><div class="p-4 flex items-center gap-4"><span class="text-4xl grayscale">🇧🇷</span><div class="flex-1"><h3 class="font-bold text-white/70 text-lg">Brasil</h3><p class="text-xs text-primary/50">8 regiones · 80 niveles</p><p class="text-xs text-white/40 mt-1">🛠️ Próximamente</p></div><span class="text-white/20 text-2xl">🔜</span></div></div></div><div class="px-4 pb-4 space-y-2"><button onclick="UI.showAlbum()" class="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold flex items-center justify-center gap-2"><span class="material-symbols-outlined">photo_album</span>ÁLBUM DE VIAJES</button><button onclick="UI.showTienda()" class="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold flex items-center justify-center gap-2"><span class="material-symbols-outlined">storefront</span>TIENDA</button></div></div>`;
-        showBannerAd();
-    }
-
-    function countryCard(flag, name, progress, onclick) { return `<div onclick="${onclick}" class="relative rounded-2xl overflow-hidden border-2 border-primary/30" style="background:linear-gradient(135deg, rgba(242,202,80,0.1), rgba(11,21,18,0.9))"><div class="p-4 flex items-center gap-4"><span class="text-4xl">${flag}</span><div class="flex-1"><h3 class="font-bold text-white text-lg">${name}</h3><p class="text-xs text-primary/70">4 regiones · 40 niveles</p><div class="w-full h-2 bg-white/10 rounded-full mt-1 overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-[#ff9f43] rounded-full transition-all" style="width:${progress}%"></div></div><p class="text-xs text-white/50 mt-1">${progress}% completado</p></div><span class="text-white/30 text-2xl">→</span></div></div>`; }
-
-    function showChileZones() { showCountryZones('chile','🇨🇱 CHILE','UI.showWorldMain()'); }
-    function showArgentineZones() { showCountryZones('argentina','🇦🇷 ARGENTINA','UI.showWorldMain()'); }
-    function showMexicanZones() { showCountryZones('mexico','🇲🇽 MÉXICO','UI.showWorldMain()'); }
-
-    function showCountryZones(country, title, backFn) {
-        const zones = ZONES.filter(z => z.country === country);
-        document.getElementById('appRoot').innerHTML = `<div class="h-full flex flex-col bg-surface p-4 overflow-y-auto" style="padding-bottom:70px"><div class="flex items-center gap-4 mb-4"><button onclick="${backFn}" class="material-symbols-outlined text-white">arrow_back</button><span class="text-xl font-bold text-primary">${title}</span></div><div class="grid grid-cols-2 gap-3">${zones.map(z => `<div onclick="UI.showZone('${z.id}')" class="relative rounded-2xl overflow-hidden h-32 border border-white/5" style="background:linear-gradient(135deg, rgba(255,255,255,0.05), transparent)"><div class="absolute inset-0 flex flex-col items-center justify-center"><span class="text-3xl">${z.icon}</span><span class="text-white font-bold text-sm">${z.name}</span></div></div>`).join('')}</div></div>`;
-        showBannerAd();
-    }
-
-    function showAlbum() {
-        let html = `<div class="h-full flex flex-col bg-surface p-4 overflow-y-auto" style="padding-bottom:70px"><div class="flex items-center gap-4 mb-6"><button onclick="UI.showWorldMain()" class="material-symbols-outlined text-white">arrow_back</button><span class="text-xl font-bold text-primary">🌎 Álbum de Viajes</span></div>`;
-        const countries = [ { flag:'🇨🇱', name:'Chile', zones:['norte','centro','sur','austral'] }, { flag:'🇦🇷', name:'Argentina', zones:['argentina-norte','argentina-centro','argentina-patagonia','argentina-litoral'] }, { flag:'🇲🇽', name:'México', zones:['mexico-norte','mexico-centro','mexico-sur','mexico-caribe'] } ];
-        countries.forEach(country => { html += `<div class="mb-4"><h3 class="text-lg font-bold text-white mb-2">${country.flag} ${country.name}</h3><div class="grid grid-cols-4 gap-2">`; country.zones.forEach(zid => { const zone = ZONES.find(z => z.id === zid); if (!zone) return; zone.photos.forEach((photo, idx) => { const levelNum = idx + 1; const stars = getStars(zid, levelNum); const unlocked = stars >= 1; html += `<div class="aspect-square rounded-lg bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">${unlocked ? `<img src="${photo.url}" class="w-full h-full object-cover" title="${photo.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'text-white/30 text-xl\'>?</span>'"/>` : `<span class="text-white/30 text-xl">?</span>`}</div>`; }); }); html += '</div></div>'; }); html += '</div>';
-        document.getElementById('appRoot').innerHTML = html; showBannerAd();
-    }
-
-    function showTienda() { document.getElementById('appRoot').innerHTML = `<div class="h-full flex flex-col bg-surface p-4 overflow-y-auto" style="padding-bottom:70px"><div class="flex items-center gap-4 mb-4"><button onclick="UI.showWorldMain()" class="material-symbols-outlined text-white">arrow_back</button><span class="text-xl font-bold text-primary">🛒 Tienda</span><span class="ml-auto text-sm text-primary/80">💰 ${coins} monedas</span></div><p class="text-xs text-white/50 mb-4">Compra power‑ups para ayudarte en los niveles.</p><div class="space-y-3"><div class="p-4 rounded-xl bg-white/5 border border-white/10 flex justify-between items-center"><div><span class="text-white font-bold">💡 Pista extra</span><p class="text-xs text-white/50">+1 uso</p></div><button onclick="UI.comprarPowerUp('hint')" class="px-4 py-2 rounded-lg bg-primary/20 text-primary text-sm font-bold">10 🪙</button></div><div class="p-4 rounded-xl bg-white/5 border border-white/10 flex justify-between items-center"><div><span class="text-white font-bold">🔀 Mezclar extra</span><p class="text-xs text-white/50">+1 uso</p></div><button onclick="UI.comprarPowerUp('shuffle')" class="px-4 py-2 rounded-lg bg-primary/20 text-primary text-sm font-bold">10 🪙</button></div><div class="p-4 rounded-xl bg-white/5 border border-white/10 flex justify-between items-center"><div><span class="text-white font-bold">↩️ Deshacer extra</span><p class="text-xs text-white/50">+1 uso</p></div><button onclick="UI.comprarPowerUp('undo')" class="px-4 py-2 rounded-lg bg-primary/20 text-primary text-sm font-bold">10 🪙</button></div></div></div>`; showBannerAd(); }
-    function comprarPowerUp(tipo) { if (coins < 10) { showMessage('No tienes suficientes monedas'); return; } coins -= 10; localStorage.setItem('coins', coins); GameEngine.addPowerUp(tipo, 1); showTienda(); showMessage('✅ Comprado'); }
-
-    function showSplash() { hideBannerAd(); document.getElementById('appRoot').innerHTML = `<main class="relative h-full w-full flex flex-col items-center justify-center bg-black"><div class="absolute inset-0 z-0" id="collageContainer"><div class="splash-overlay"></div></div><div class="relative z-20 text-center"><span class="font-bold text-sm text-primary/80 uppercase tracking-[0.3em] block mb-4">Outfit</span><h1 class="text-[42px] font-bold text-primary text-glow leading-tight italic">Descubre<br/>América</h1><div class="h-12 w-[1px] bg-gradient-to-b from-primary/60 to-transparent mx-auto my-4"></div><p class="text-sm text-white/50 tracking-widest uppercase">World Tour</p></div><div class="relative z-20 pb-8 text-center animate-pulse mt-8"><p class="text-xs text-primary/60 tracking-widest uppercase">Viaje Meditativo</p></div></main>`; setTimeout(showWorldMain, 4000); }
-
-    return Object.freeze({ showSplash, showWorldMain, showChileZones, showArgentineZones, showMexicanZones, showZone, selectLevel, startGameWithDifficulty, startGame, goBackFromGame, useShuffle, useHint, undoLastSelection, showTienda, showAlbum, showRewardedVideo, closeRewardModal, simulateRewardedVideo, closeVictory, unlockLevelWithVideo, startMemoriceMinigame, closeMemorice, advanceTutorial, prevTutorialStep, skipTutorial, completeTutorial });
-})();
-
-UI.showSplash();
-</script>
+    <div id="rewardModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:350;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;">
+        <div style="width:300px;height:250px;background:rgba(255,255,255,0.05);border-radius:16px;border:2px dashed rgba(74,222,128,0.5);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><span style="font-size:4em;">🎬</span></div>
+        <p style="color:white;" id="rewardText">Mira el video para ganar tu recompensa</p>
+        <div style="display:flex;gap:12px;margin-top:12px;">
+            <button onclick="UI.closeRewardModal()" style="background:rgba(255,255,255,0.1);color:white;padding:8px 24px;border-radius:12px;">Cancelar</button>
+            <button onclick="UI.simulateRewardedVideo()" class="btn-reward" style="padding:8px 24px;border-radius:12px;font-weight:bold;">🎁 Ver Video</button>
+        </div>
+    </div>
+    <script src="juego.js"></script>
+    <script src="datos.js"></script>
+    <script src="ui.js"></script>
 </body>
 </html>
